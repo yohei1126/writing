@@ -12,7 +12,7 @@ Zenn articles stay in [yohei1126/zenn](https://github.com/yohei1126/zenn). This 
 
 ## LinkedIn naming
 
-```
+```text
 linkedin/YYYY-MM-DD-slug-{article|post}.en.md
 ```
 

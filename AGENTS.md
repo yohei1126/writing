@@ -15,12 +15,13 @@ Markdown sources for **non-Zenn** outreach writing by Yohei (LinkedIn articles/p
 | :--- | :---: | :--- |
 | `linkedin/` | yes | LinkedIn article and feed-post Markdown |
 | `README.md` | yes | Human-oriented overview |
+| `.markdownlint.json` | yes | markdownlint rules (long lines allowed) |
 
 ## LinkedIn file conventions
 
 Naming:
 
-```
+```text
 linkedin/YYYY-MM-DD-slug-{article|post}.en.md
 ```
 
@@ -35,7 +36,30 @@ Rules when working here:
 - **Do not rewrite existing article/post body** unless the user explicitly requests an edit; treat migrated files as source of truth.
 - Do not add Zenn front matter (`title`, `emoji`, `type`, `topics`, etc.) to LinkedIn files.
 - Publishing is **manual** (copy into LinkedIn UI). Agents draft and revise Markdown only; they do not post.
-- Keep paired article/post filenames aligned (same date + slug, different `{article\|post}` suffix) when creating a new pair.
+- Keep paired article/post filenames aligned (same date + slug, different `{article|post}` suffix) when creating a new pair.
+
+## Writing skills (required before review)
+
+Refine wording with the appropriate skill **before** asking for review. Do not skip this for new or substantially edited drafts.
+
+| Language | Skill | Purpose / source |
+| :--- | :--- | :--- |
+| Japanese | `japanese-tech-writing` | Japanese technical prose. Source: [gist (k16shikano)](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d) |
+| English | `humanizer` | Remove sentence-level AI-writing tells. Source: [blader/humanizer](https://github.com/blader/humanizer) |
+| English | `english-tech-blog-structure` | Article structure for tech posts (adapted from [getsentry/blog-writing-guide](https://github.com/getsentry/blog-writing-guide)) |
+
+For English LinkedIn articles/posts, apply **both** `humanizer` and `english-tech-blog-structure` before review.
+
+## Lint before push
+
+Run markdownlint locally before pushing:
+
+```bash
+npm install
+npm run lint
+```
+
+Config is `.markdownlint.json` (based on yohei1126/zenn; line length and LinkedIn-prose-friendly rules are relaxed). CI runs the same check via `.github/workflows/markdownlint.yml`.
 
 ## External repos
 
@@ -47,5 +71,7 @@ Rules when working here:
 ## Success criteria for edits
 
 - Filenames match the convention above.
+- Wording refined with the skills above before review.
+- `npm run lint` / CI markdownlint passes.
 - LinkedIn drafts remain English Markdown suitable for manual paste/publish.
 - No Zenn-only tooling or season-plan workflow is assumed here.
