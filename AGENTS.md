@@ -44,9 +44,9 @@ Refine wording with the appropriate skill **before** asking for review. Do not s
 
 | Language | Skill | Purpose / source |
 | :--- | :--- | :--- |
-| Japanese | `japanese-tech-writing` | Japanese technical prose. Source: [gist (k16shikano)](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d) |
-| English | `humanizer` | Remove sentence-level AI-writing tells. Source: [blader/humanizer](https://github.com/blader/humanizer) |
-| English | `english-tech-blog-structure` | Article structure for tech posts (adapted from [getsentry/blog-writing-guide](https://github.com/getsentry/blog-writing-guide)) |
+| Japanese | `japanese-tech-writing` | Japanese technical prose. Source: https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d |
+| English | `humanizer` | Remove sentence-level AI-writing tells. Source: https://github.com/blader/humanizer |
+| English | `english-tech-blog-structure` | Article structure for tech posts. Source: https://github.com/yohei1126/agent-skills/tree/main/english-tech-blog-structure (adapted from [getsentry/skills blog-writing-guide](https://github.com/getsentry/skills/blob/main/skills/blog-writing-guide/SKILL.md)) |
 
 For English LinkedIn articles/posts, apply **both** `humanizer` and `english-tech-blog-structure` before review.
 
