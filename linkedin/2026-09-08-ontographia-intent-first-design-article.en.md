@@ -1,6 +1,7 @@
 <!-- markdownlint-disable-next-line MD041 -->
 **Notes - do not paste (everything above the horizontal rule)**
 
+- **Basis:** Ontographia **v0.1.6** (released 2026-10-21). Intent layer = optional extra `ontographia[llm]` ([PR #93](https://github.com/edgesentry/ontographia/pull/93), epic [#84](https://github.com/edgesentry/ontographia/issues/84)); MCP server = `ontographia[mcp]` ([PR #94](https://github.com/edgesentry/ontographia/pull/94), epic [#85](https://github.com/edgesentry/ontographia/issues/85)); MCP CI vs live Neo4j ([PR #99](https://github.com/edgesentry/ontographia/pull/99)). Both extras are **experimental / 0.x**. Sources checked: README, CHANGELOG, `docs/llm.md`, `docs/mcp.md`, `docs/python.md`, `docs/release.md`, `pyproject.toml` at tag `v0.1.6`.
 - **Title (LinkedIn title field):** Intent-First Design and Implementation: Deterministic Cypher Assembly (Ontographia Part 2). This matches the Part 2 title already listed in Part 1. Alternative: The LLM Never Writes Cypher: Inside Ontographia's Intent-First Architecture (Ontographia Part 2).
 - **Subtitle / headline:** The LLM writes only an Intent JSON. A deterministic Rust core validates it against the ontology and emits parameter-bound Cypher.
 - **Cover image:** same style as the Part 1 cover (images/ontographia-part1-cover.jpg in yohei1126/writing), text "Ontographia Part 2: Intent-First Design and Implementation", saved as images/ontographia-part2-cover.jpg. Upload it in LinkedIn's cover field, then delete the cover [IMAGE] line at the top of the body.
@@ -16,7 +17,7 @@
 
 If an LLM writes your Cypher, you inherit its hallucinations. If it only picks from a template catalog, you inherit the catalog. Ontographia takes a third route: the LLM describes what the user wants as an Intent JSON document, and a deterministic, ontology-constrained compiler written in Rust turns that document into parameter-bound Cypher. The LLM never writes Cypher.
 
-This article explains how the pipeline works, why the LLM and the database driver are kept out of the core, and how three ideas from recent Text2Cypher research carry over to the Intent layer. Everything here matches Ontographia v0.1.5.
+This article explains how the pipeline works, why the LLM and the database driver stay out of the core, and how three ideas from recent Text2Cypher research carry over to the Intent layer. Everything here matches Ontographia [v0.1.6](https://github.com/edgesentry/ontographia/releases/tag/v0.1.6) (2026-10-21): the Intent helpers ship as the optional extra `ontographia[llm]`, and an experimental MCP server ships as `ontographia[mcp]`.
 
 **The Ontographia series**
 
@@ -76,7 +77,7 @@ In the hybrid approach, people write a Cypher string in advance for each query p
 
 With Intent-first, a query is a combination of JSON fields: the starting class (`start`), the relationships to traverse (`traverse`), the filters (`filter`) and the returned fields (`return`). Sorting (`order_by`), result limits (`limit` / `skip`) and an `optional` flag can be added when needed.
 
-Since v0.1.5, any other key is a validation error that names the offending field. Earlier versions ignored unknown keys silently, so an LLM that wrote `filters` instead of `filter` got a query that built fine with the filter dropped. Now the Intent fails validation, and the app layer can hand the error back to the LLM for a retry. Dialect names follow the same rule: Python and the FFI/Go bindings reject an unknown dialect instead of falling back to `cypher25`.
+Since [v0.1.5](https://github.com/edgesentry/ontographia/releases/tag/v0.1.5), any other key is a validation error that names the offending field. Earlier versions ignored unknown keys silently, so an LLM that wrote `filters` instead of `filter` got a query that built fine with the filter dropped. Now the Intent fails validation, and the app layer can hand the error back to the LLM for a retry. Dialect names follow the same rule: Python and the FFI/Go bindings reject an unknown dialect instead of falling back to `cypher25`.
 
 As long as a question stays within the vocabulary the ontology defines, the LLM can express its exploration pattern as a combination of these fields, so a new pattern does not need a new template.
 
@@ -100,13 +101,18 @@ The guarantee that the LLM never rewrites a Cypher string is enforced by languag
 
 Because the core is small and has no I/O, bindings for Python, Go or WebAssembly can be thin wrappers around it.
 
-## Why the out-of-core pieces still ship in examples/
+## Optional extras outside the core (v0.1.6)
 
 Prompt construction, LLM calls, execution through the Neo4j driver, dynamic schema subsetting and execution feedback belong to whatever framework a production system uses (LangChain, LlamaIndex, an in-house agent platform). They are outside the scope of the core library by design.
 
-Leaving them out entirely would cost something, though. Without them there would be no end-to-end (E2E) integration tests that include the app layer, no way to check the approach in a real environment, and engineers would have to guess how to call the core from an agent.
+Leaving them out of the shipped package entirely would cost something, though. Without a shared reference there would be no common E2E path for the app layer, and engineers would have to guess how to call the core from an agent.
 
-So the repository ships an out-of-core Python implementation in [`examples/`](https://github.com/edgesentry/ontographia/tree/main/examples), mainly `examples/llm/`. It lets us run E2E tests without touching the core's determinism, and it is a working reference for how to use the core library.
+Since [v0.1.6](https://github.com/edgesentry/ontographia/releases/tag/v0.1.6), those helpers ship as **experimental / 0.x** optional Python extras (Phase 1 of the [public roadmap](https://edgesentry.github.io/ontographia/roadmap/)):
+
+- Intent layer: `pip install "ontographia[llm]"` — packages the former `examples/llm/` helpers as `ontographia.llm` ([docs/llm.md](https://edgesentry.github.io/ontographia/llm/), [PR #93](https://github.com/edgesentry/ontographia/pull/93), epic [#84](https://github.com/edgesentry/ontographia/issues/84)). Cypher still comes only from `Engine.build()` after Intent validation. The Neo4j driver is **not** part of this extra; install `neo4j` separately when you want live execution.
+- MCP server: `pip install "ontographia[mcp]"` — stdio server entry point `ontographia-mcp` ([docs/mcp.md](https://edgesentry.github.io/ontographia/mcp/), [PR #94](https://github.com/edgesentry/ontographia/pull/94), epic [#85](https://github.com/edgesentry/ontographia/issues/85)).
+
+The repository still ships thin demos and eval harnesses under [`examples/`](https://github.com/edgesentry/ontographia/tree/main/examples) (for example [`examples/run_llm_e2e.py`](https://github.com/edgesentry/ontographia/blob/main/examples/run_llm_e2e.py)), which import the packaged `ontographia.llm` module.
 
 ## Terms used in this article
 
@@ -117,7 +123,7 @@ So the repository ships an out-of-core Python implementation in [`examples/`](ht
 
 # Three research ideas moved from Cypher to the Intent layer
 
-The Neo4j-related research covered in Part 1 (Schema Filtering, Iterative Refinement and Difficulty-Adaptive Spend) is useful, but all of it assumes the LLM writes Cypher. Ontographia applies the same ideas to Intent generation in the app layer (`examples/llm/`).
+The Neo4j-related research covered in Part 1 (Schema Filtering, Iterative Refinement and Difficulty-Adaptive Spend) is useful, but all of it assumes the LLM writes Cypher. Ontographia applies the same ideas to Intent generation in the optional Intent layer (`ontographia[llm]`).
 
 [IMAGE: Research-to-Intent-layer mapping diagram. Schema Filtering → 3.1 ontology subsetting of the extraction prompt; Iterative Refinement → 3.2 execution-feedback loop that repairs the Intent JSON; Adaptive Spend → 3.3 adaptive allocation (minimal resources first, full schema only for hard questions). Source: the Mermaid flowchart in section 3 of the Zenn article (https://zenn.dev/yohei/articles/2026-09-08-ontographia-intent-first-design); render it to PNG.]
 
@@ -125,9 +131,9 @@ The Neo4j-related research covered in Part 1 (Schema Filtering, Iterative Refine
 
 Large enterprise ontologies can have hundreds or thousands of classes and properties. Putting all of them into the prompt drives up token usage and makes the LLM more likely to pick a property that looks right but isn't.
 
-The app layer (`examples/llm/subset.py`) matches tokens in the user's question exactly against ontology element names, ignoring case and normalizing plurals. It then extracts the minimal topology that connects the matched classes (relationship closure), so the ontology in the prompt shrinks considerably.
+`ontographia.llm` matches tokens in the user's question exactly against ontology element names, ignoring case and normalizing plurals (`subset_ontology` / `prompt_views_for_question`). It then extracts the minimal topology that connects the matched classes (relationship closure), so the ontology in the prompt shrinks considerably.
 
-If extraction or validation fails in the subset phase, the pipeline retries with the full schema. This switch is the `schema_policy` setting of the example pipeline (`examples/llm/pipeline.py`); the pip package and the Rust core do not have it.
+If extraction or validation fails in the subset phase, the pipeline retries with the full schema. This switch is the `schema_policy` argument of `extract_validated_intent`; the Rust core does not have it.
 
 `schema_policy` takes three values: `auto` (the default), `subset` and `full`. With `auto`, the pipeline tries the subset first and switches to the full schema if the subset phase hits an extraction failure, a `validate_intent` failure or an exception during repair. If no vocabulary in the question matches and the subset is empty, it uses the full schema from the start.
 
@@ -137,15 +143,15 @@ An Intent can be valid against the ontology and compile cleanly (`Engine::build`
 
 Text2Cypher research usually handles this by handing the Cypher string back to the LLM to fix, which brings back the non-determinism this design is meant to remove.
 
-The example app (`examples/llm/exec_feedback.py`) gives the LLM the execution result (zero rows or the error details) and asks it to revise the Intent JSON instead of the Cypher. The loop runs only when you pass `--execute --refine-on-exec`.
+`refine_intent_after_execution` gives the LLM the execution result (zero rows or the error details) and asks it to revise the Intent JSON instead of the Cypher. The example CLI (`examples/run_llm_e2e.py`) exposes this when you pass `--execute --refine-on-exec`.
 
-Each revised Intent goes through `validate_intent` and AST compilation again, so every query that runs still comes out of the deterministic compiler; there is no path for the LLM to edit a Cypher string. By default the loop runs at most 2 rounds (change it with `--max-exec-refines`), always uses the full schema, and stops as soon as a revised Intent fails validation.
+Each revised Intent goes through `validate_intent` and AST compilation again, so every query that runs still comes out of the deterministic compiler; there is no path for the LLM to edit a Cypher string. By default the loop runs at most 2 rounds (`max_exec_refines=2`; change it with `--max-exec-refines` on the example CLI), always uses the full schema, and stops as soon as a revised Intent fails validation. The Neo4j driver stays outside `ontographia[llm]`; you pass an `execute_fn` callback (or install `neo4j` for the demo script).
 
 ## 3. Difficulty-adaptive spend
 
 Most day-to-day business questions are single-node lookups or shallow traversals, and only some need complex joins. Sending a full-schema prompt and reserving a large retry budget (five attempts, say) for every question wastes tokens and adds latency.
 
-The example pipeline (`examples/llm/pipeline.py`, called from `examples/run_llm_e2e.py`) starts with a small subset and a minimal retry budget (`initial_retries=1`). Only when the subset phase fails does it switch to the full schema and allow more retries (`escalated_retries=5`). The trigger is the same as in subsetting: a failure in extraction, validation or repair. Execution failures on Neo4j (errors or zero rows) do not trigger this escalation; the execution-feedback loop handles them.
+`extract_validated_intent` (used by `examples/run_llm_e2e.py`) starts with a small subset and a minimal retry budget (`initial_retries=1`). Only when the subset phase fails does it switch to the full schema and allow more retries (`escalated_retries=5`). The trigger is the same as in subsetting: a failure in extraction, validation or repair. Execution failures on Neo4j (errors or zero rows) do not trigger this escalation; the execution-feedback loop handles them.
 
 The aim is to keep tokens and latency low for everyday questions and spend more retries only on hard ones. Part 3 covers the quantitative evaluation.
 
@@ -167,9 +173,9 @@ Agent developers no longer have to produce near-identical Cypher templates and t
 
 You don't need to build from source. The CLI installs with Homebrew, and packages are released for Python, Go and Rust:
 
-- CLI: `brew install ontographia` (after `brew tap edgesentry/tap`). Also `cargo install ontographia-cli`, or binaries from GitHub Releases.
-- Python: `pip install ontographia` (on PyPI for Linux, macOS arm64 and Windows).
-- Go: `go get github.com/edgesentry/ontographia/bindings/go` (cgo / FFI binding).
+- CLI: `brew install ontographia` (after `brew tap edgesentry/tap`). Also `cargo install ontographia-cli`, or binaries from GitHub Releases. Homebrew ships pre-built binaries for macOS Apple Silicon and Linux x86_64; other platforms can use `cargo install` or GitHub Release assets.
+- Python: `pip install ontographia` (wheels for Python 3.11–3.13 on Linux x86_64, Linux arm64, macOS arm64, and Windows x86_64). Optional extras: `pip install "ontographia[llm]"` and `pip install "ontographia[mcp]"`.
+- Go: `go get github.com/edgesentry/ontographia/bindings/go@v0.1.6` (cgo / FFI binding; download the matching `libontographia_ffi` archive from GitHub Releases).
 - Rust: `cargo add ontographia-core ontographia-adapters`. The crates `ontographia-core`, `ontographia-adapters`, `ontographia-schema` and `ontographia-cli` are on crates.io.
 
 The repository [edgesentry/ontographia](https://github.com/edgesentry/ontographia) includes manufacturing-domain sample data. Clone it first:
@@ -228,13 +234,20 @@ The SKU value `SPX-100` never appears in the query text. It travels separately a
 
 ## End to end from Python: LLM extraction, build, Neo4j execution
 
-[`examples/run_llm_e2e.py`](https://github.com/edgesentry/ontographia/blob/main/examples/run_llm_e2e.py) takes a natural-language question, extracts the Intent with an LLM, and runs it through to Neo4j. It is the E2E integration test for the app layer, and also a reference for embedding the core library (the Python package) in your own systems and agents.
+[`examples/run_llm_e2e.py`](https://github.com/edgesentry/ontographia/blob/main/examples/run_llm_e2e.py) is a **local** demo (not run in CI). It takes a natural-language question, extracts the Intent with a mock or OpenAI-compatible backend, and can run through to Neo4j. It is also a reference for embedding `ontographia[llm]` in your own systems and agents. The questions below are the ones documented in the [Neo4j walkthrough](https://edgesentry.github.io/ontographia/end-to-end-neo4j/); this article does not claim a live run of any particular question.
 
 ```bash
-uv sync
+pip install "ontographia[llm]" neo4j
 
-uv run python examples/run_llm_e2e.py \
-  --question "Find all suppliers providing parts to Plant-1" \
+# Offline demo (fixture LLM, no API key):
+python examples/run_llm_e2e.py \
+  --question "List suppliers for parts in product SKU SPX-100" \
+  --execute \
+  --password ontographia
+
+# Optional: empty results / driver errors → revise Intent and recompile:
+python examples/run_llm_e2e.py \
+  --question "Which plant hosts production Line-1?" \
   --execute \
   --refine-on-exec \
   --password ontographia
@@ -242,15 +255,30 @@ uv run python examples/run_llm_e2e.py \
 
 For the full steps, including the Neo4j container setup, see the [Neo4j walkthrough](https://edgesentry.github.io/ontographia/end-to-end-neo4j/) in the docs.
 
+## Experimental MCP server
+
+`pip install "ontographia[mcp]"` installs an experimental stdio MCP server (`ontographia-mcp`) for hosts such as Claude Desktop or Cursor. The server **does not call an LLM**. The host produces Intent JSON; Ontographia validates it, emits parameter-bound Cypher, and can optionally execute.
+
+Tools: `list_ontology`, `intent_schema`, `build_cypher`, and read-only `execute`. Clients never submit raw Cypher; `execute` only runs queries Ontographia generated from validated Intent, under Neo4j `READ_ACCESS` / `execute_read` plus a Cypher write deny list. CI runs these tools against a live Neo4j service ([PR #99](https://github.com/edgesentry/ontographia/pull/99)).
+
+```bash
+pip install "ontographia[mcp]"
+# or without a local venv:
+uvx --from "ontographia[mcp]" ontographia-mcp \
+  --ontology /path/to/ontology.native.yaml
+```
+
+Configuration is via CLI flags (`--ontology`, `--neo4j-uri`, …) or env vars such as `ONTOGRAPHIA_ONTOLOGY`, `NEO4J_URI`, `NEO4J_USERNAME` / `NEO4J_USER`, `NEO4J_PASSWORD`. Full setup for Claude Desktop and Cursor: [docs/mcp.md](https://edgesentry.github.io/ontographia/mcp/).
+
 # Known limits at this stage
 
 Intent-first covers questions that fit the ontology's vocabulary. A question that needs a class or relationship the ontology does not define fails validation instead of producing a query.
 
 The project is pre-1.0, and releases can still break compatibility. [v0.1.5](https://github.com/edgesentry/ontographia/releases/tag/v0.1.5) made unknown Intent keys and unknown dialects errors, so Intents with extra or misspelled keys that built under earlier versions now fail validation. Check your Intents before upgrading.
 
-Subsetting, adaptive spend and execution feedback live in the example app (`examples/llm/`), not in the released pip package or the Rust core. Execution feedback is capped at 2 rounds by default and stops when a revised Intent fails validation. GQL output is a prototype dialect.
+The Intent layer and MCP server in [v0.1.6](https://github.com/edgesentry/ontographia/releases/tag/v0.1.6) are **experimental / 0.x** optional extras. Subsetting, adaptive spend and execution feedback live in `ontographia[llm]`, not in the Rust core. Execution feedback is capped at 2 rounds by default and stops when a revised Intent fails validation. GQL output is a prototype dialect. A future `ontographia[litellm]` extra is reserved in `pyproject.toml` but **not implemented**; point `OpenAICompatibleBackend` at any OpenAI-compatible endpoint instead.
 
-The [public roadmap](https://edgesentry.github.io/ontographia/roadmap/) (`docs/roadmap.md`) groups upcoming work into Phases 0 to 5, tracked as epics #82 to #89, with dependencies but no dates. Phase 1 covers packaging this Intent layer as an optional Python extra (#84) and an MCP server (#85). Neither is in a release yet.
+The [public roadmap](https://edgesentry.github.io/ontographia/roadmap/) (`docs/roadmap.md`) groups work into Phases 0 to 5, tracked as epics [#82](https://github.com/edgesentry/ontographia/issues/82) to [#89](https://github.com/edgesentry/ontographia/issues/89), with dependencies but no dates. Phase 1 (Intent layer packaging and MCP) shipped code in v0.1.6 via [PR #93](https://github.com/edgesentry/ontographia/pull/93) and [PR #94](https://github.com/edgesentry/ontographia/pull/94); later phases cover sample-graph demos, public benchmarks, framework integrations, and OWL/SHACL constraints.
 
 # Next: does this hold up at scale?
 
@@ -258,4 +286,4 @@ Ontographia keeps natural-language flexibility in the Intent layer and makes Cyp
 
 Part 3 reports the quantitative results, including where the approach falls short, from a stress test with thousands of properties (Track A) and validation on public datasets (Track B). The English version is upcoming; the [Japanese version is on Zenn](https://zenn.dev/yohei/articles/2026-09-08-ontographia-eval-and-roadmap).
 
-To try it now, start with the [Neo4j walkthrough](https://edgesentry.github.io/ontographia/end-to-end-neo4j/). Issues and feedback are welcome on the [repository](https://github.com/edgesentry/ontographia).
+To try it now, start with the [Neo4j walkthrough](https://edgesentry.github.io/ontographia/end-to-end-neo4j/), or install `ontographia[llm]` / `ontographia[mcp]` from PyPI. Issues and feedback are welcome on the [repository](https://github.com/edgesentry/ontographia).
