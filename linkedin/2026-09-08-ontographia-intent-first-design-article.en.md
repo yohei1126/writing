@@ -115,7 +115,7 @@ v0.1.6 also added an experimental MCP (Model Context Protocol) server, `ontograp
 
 All four tools worked when I ran them against a real setup, including replaying a saved Intent through `build_cypher` and `execute`. The `execute` integration tests also run in CI against a live Neo4j instance.
 
-Separately, I ran questions end to end, from question to result rows, with Gemini 3.7 Flash and a local Neo4j. When the model put a property name that does not exist in the ontology into an Intent, for example `"name激as_name"`, the Intent failed validation, no Cypher was emitted, and the name never reached the database.
+Separately, I ran questions end to end, from question to result rows, with Gemini 3.7 Flash and a local Neo4j. When the model put a property name that does not exist in the ontology into an Intent, such as `"name激as_name"` (a garbled name with a stray character between `name` and `as_name`), the Intent failed validation, no Cypher was emitted, and the name never reached the database.
 
 Answering the question was a different matter. I kept all four attempts, and only one succeeded end to end; that one returned two rows, MikroMotors and FormTech. Stopping a bad name and answering correctly are separate results, and in this small sample the second rate is low.
 
