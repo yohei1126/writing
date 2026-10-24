@@ -1,15 +1,13 @@
-# LinkedIn feed post: Ontographia Part 2
+<!-- markdownlint-disable-file MD041 -->
+Part 2 of my Ontographia series is up. The idea: the LLM never writes Cypher. It writes an Intent JSON describing the user's question, and a deterministic Rust core checks every name against the ontology and compiles parameter-bound Cypher.
 
-*Attach:* the Part 2 article link (LinkedIn shows the cover image as the preview).
+The article explains why the core has no LLM and no Neo4j driver, how Schema Filtering, Iterative Refinement and adaptive spend move from Cypher to the Intent, and what changes for Agent Skills when there is no template catalog.
 
----
+It ends with the experimental MCP server from v0.1.6. In a real end-to-end run, a property name the ontology does not define was rejected before it reached the database. Only one of the four attempts succeeded end to end, though, and the article spells out what validation does not catch.
 
-Part 2 of my Ontographia series is up: the LLM writes only an Intent JSON, and a deterministic Rust core validates it against the ontology and emits parameter-bound Cypher. The article walks through that pipeline, why the core has no LLM or Neo4j driver, and how Schema Filtering, Iterative Refinement and adaptive spend move to the Intent layer.
-
-It also covers [v0.1.6](https://github.com/edgesentry/ontographia/releases/tag/v0.1.6): the Intent helpers are now `pip install "ontographia[llm]"`, and there is an experimental MCP server via `pip install "ontographia[mcp]"` (both still 0.x). Part 3, on evaluation, follows.
+Part 3, with the evaluation numbers, comes next.
 
 Article: [LINK TO PART 2]
-
 Repo: https://github.com/edgesentry/ontographia
 
 #Neo4j #KnowledgeGraph #Cypher #LLM #Ontology #OpenSource #MCP
