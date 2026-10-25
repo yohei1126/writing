@@ -1,5 +1,7 @@
 # Wrong but Real: Evaluating Intent-First Cypher Generation at 2,000 Properties (Ontographia Part 3)
 
+![Cover: ontology scale narrowed to a subset, then evaluation results](../../images/ontographia-part3-linkedin-cover.jpg)
+
 > **Series overview: Ontographia**
 >
 > Teams that query a graph database such as Neo4j in natural language usually choose between letting an AI write the query and locking the system to handwritten templates. This series examines the common compromise (agent skills plus template selection) and proposes another split: the AI extracts a structured Intent, and an ontology-checked, deterministic pipeline compiles the Cypher ([Ontographia](https://github.com/edgesentry/ontographia)).
