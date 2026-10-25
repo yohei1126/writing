@@ -105,13 +105,13 @@ Each live condition ran once, so I cannot say how stable any of these difference
 
 The hallucination claim stays narrow. Names that are not in the ontology are stopped before anything reaches the database. A real name chosen wrongly can still pass, which is the whole point of the Track A baseline, and factual errors are out of scope. Subsetting reduces the chance of a wrong pick by hiding distractors. It does not eliminate it, and the exact-match subset still misses synonyms.
 
-## Roadmap: done, not claimed, next
+## What I measured, limits, and what's next
 
-**Done:** H1 to H3 on the mechanical arm; live H1 with Gemini 3.7 Flash using `subset_fallback`; all 15 public schemas loaded; the execution-match spot check with its limits; a generalized repair mapping; and the re-run on the published package with two model versions.
+**What I measured:** H1 to H3 on the mechanical arm; live H1 with Gemini 3.7 Flash using `subset_fallback`; all 15 public schemas loaded; the execution-match spot check with its limits; a generalized repair mapping; and the re-run on the published package with two model versions.
 
-**Deliberately not claimed:** state-of-the-art execution match on Track B; live results across model families (everything here is Gemini; other families are open for anyone to try); and full live coverage of H2 and H3.
+**Limits:** no state-of-the-art claim on Track B execution match; no live results across model families (everything here is Gemini; other families are open for anyone to try); and no full live coverage of H2 and H3.
 
-**Next, with no dates:**
+**What's next (no dates):**
 
 1. Gold answers written as Intents, and a metric that accepts semantically equivalent Cypher instead of requiring an exact row match.
 2. Subsetting that handles synonyms and spelling variants of domain terms, not only exact matches.
