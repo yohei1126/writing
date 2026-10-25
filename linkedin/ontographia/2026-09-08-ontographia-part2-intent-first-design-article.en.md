@@ -25,12 +25,16 @@ In [Part 1](https://www.linkedin.com/pulse/graph-ai-dilemma-let-llms-write-cyphe
 
 Ontographia moves flexibility into the Intent and keeps query assembly deterministic. Only Intents that pass ontology validation are compiled. Prompting, model calls, and database execution live outside the core, in the application or agent layer. The [architecture guide](https://edgesentry.github.io/ontographia/architecture/) describes the boundary in detail.
 
-## How a question becomes a query (without the code)
+## How a question becomes a query
+
+The LLM does not write Cypher. It writes a structured Intent; a deterministic pipeline validates that Intent against the ontology and compiles the query.
+
+![Flow from natural-language question to Intent, ontology validation, deterministic Cypher compile, then Neo4j execution](../../images/ontographia-part2-question-to-query.png)
 
 In plain terms the path is:
 
 1. Load the company's ontology (YAML, Turtle, or another supported form) into an internal Canonical Ontology Model. That model is the vocabulary source of truth.
-2. Give the model a schema derived from that vocabulary and ask for a structured Intent as output.
+2. Give the model a schema derived from that vocabulary and ask for a structured Intent as output (start, traverse, filter, return). The model stops there; it does not emit Cypher.
 3. Validate every class, relationship, and property name in the Intent. Unknown names stop here; the error goes back so the model can retry.
 4. Compile a validated Intent into a `{ query, params }` pair. The same ontology, Intent, and dialect always produce the same pair. Filter values travel in the parameter map, not inside the query text.
 5. Run that pair against Neo4j in the application layer.
