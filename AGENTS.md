@@ -15,6 +15,8 @@ Markdown sources for **non-Zenn** outreach writing by Yohei (LinkedIn articles/p
 | :--- | :---: | :--- |
 | `linkedin/` | yes | LinkedIn article and feed-post Markdown (flat or series subfolders) |
 | `linkedin/ontographia/` | yes | Ontographia English series (Parts 1–3 article/post pairs) |
+| `devto/` | yes | Dev.to English drafts with DEV YAML front matter |
+| `devto/ontographia/` | yes | Ontographia Dev.to drafts (`published: false` until a later register step) |
 | `README.md` | yes | Human-oriented overview |
 | `.markdownlint.json` | yes | markdownlint rules (long lines allowed) |
 
@@ -68,6 +70,14 @@ For Ontographia LinkedIn **article** bodies (Parts 1–3):
 - Prefer mechanism and trade-offs over code. Do not embed long code samples, Cypher/JSON walkthroughs, or CLI dumps in the article body.
 - When implementers need depth, point to a concrete public docs URL or repository path (for example the [architecture guide](https://edgesentry.github.io/ontographia/architecture/), [Evaluation guide](https://edgesentry.github.io/ontographia/evaluation/), or `examples/llm/eval/`).
 - Keep existing verified numbers and claims; do not invent metrics or round claims up.
+
+## Dev.to file conventions
+
+```text
+devto/<series>/YYYY-MM-DD-<series>-partN-<topic-slug>.md
+```
+
+English article drafts with DEV front matter (`title`, `published`, `tags`, `canonical_url`, `series`). Keep `published: false` in git. Do not call the Dev.to API from this repo; after merge, a separate step registers the draft.
 
 ## Writing skills (required before review)
 
