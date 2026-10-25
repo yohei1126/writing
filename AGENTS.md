@@ -60,6 +60,15 @@ Rules when working here:
 - Keep paired article/post filenames aligned (same date + slug, different `{article|post}` suffix) when creating a new pair.
 - LinkedIn paste constraints: Markdown only; no tables, HTML, or Mermaid in article/post bodies intended for paste.
 
+### Ontographia article audience and depth
+
+For Ontographia LinkedIn **article** bodies (Parts 1–3):
+
+- Write so a non-engineer can follow the problem, the approach, and the results in plain language.
+- Prefer mechanism and trade-offs over code. Do not embed long code samples, Cypher/JSON walkthroughs, or CLI dumps in the article body.
+- When implementers need depth, point to a concrete public docs URL or repository path (for example the [architecture guide](https://edgesentry.github.io/ontographia/architecture/), [Evaluation guide](https://edgesentry.github.io/ontographia/evaluation/), or `examples/llm/eval/`).
+- Keep existing verified numbers and claims; do not invent metrics or round claims up.
+
 ## Writing skills (required before review)
 
 Refine wording with the appropriate skill **before** asking for review. Do not skip this for new or substantially edited drafts.

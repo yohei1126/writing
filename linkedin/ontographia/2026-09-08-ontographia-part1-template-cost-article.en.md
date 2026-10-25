@@ -2,263 +2,123 @@
 
 ![The Graph AI Dilemma: Navigating the trade-offs between stochastic LLM generation and deterministic graph execution](../../images/ontographia-part1-cover.jpg)
 
-> **Series Overview: The Ontographia Trilogy**
-> 
-> When querying graph databases (such as Neo4j) with natural language, enterprise teams repeatedly face a difficult dilemma: **Do you let the LLM generate Cypher queries directly, or do you restrict the system to a rigid catalog of handcrafted query templates?**
-> 
-> This three-part series dissects the architectural limitations of today's dominant compromise—**Agent Skills + Template Selection (the Hybrid approach)**. Drawing on recent research shared by the Neo4j engineering community, we propose and validate a new paradigm: **confine the LLM strictly to extracting structured intent (Intent JSON), while compiling Cypher deterministically through an ontology-constrained Abstract Syntax Tree (AST) pipeline** ([Ontographia](https://github.com/edgesentry/ontographia)).
-> 
-> * **Part 1: The Graph AI Dilemma: Let LLMs Write Cypher or Suffer Template Maintenance Hell?** *(This article)*  
->   *Focus: Production bottlenecks, state-of-the-art research review, and the Intent-first hypothesis*
-> * **Part 2: Intent-First Design and Implementation: Deterministic Cypher Assembly** *(Upcoming)*  
->   *Focus: Separation of Core and App layers, AST compiler internals, and execution loop*
-> * **Part 3: Empirical Validation and Roadmap: Large-Scale Ontology Evaluation and External Validity** *(Upcoming)*  
->   *Focus: Quantitative stress testing (token reduction, silent error mitigation) & public DB benchmarks*
-> 
-> * Project Documentation: [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)  
-> * Open Source Repository: [github.com/edgesentry/ontographia](https://github.com/edgesentry/ontographia)
+> **Series overview: Ontographia**
+>
+> Business teams want to ask a graph database (for example Neo4j) questions in ordinary language. The usual choices are risky: let an AI write the database query itself, or lock the system to a fixed list of hand-written query templates.
+>
+> This three-part series looks at the common middle ground (AI picks a pre-approved template) and why it still stalls in production. It then proposes a different split: the AI only describes *what* the user wants to know, and a fixed, ontology-checked pipeline turns that description into a safe query ([Ontographia](https://github.com/edgesentry/ontographia)).
+>
+> * **Part 1: The Graph AI Dilemma** *(This article)*. Why templates become the bottleneck, what recent research helps, and the Intent-first idea
+> * **Part 2: The LLM Never Writes Cypher**. How the split works in practice, without embedding implementation walkthroughs here
+> * **Part 3: Wrong but Real**. Measurements on large ontologies and public datasets, plus what is still open
+>
+> * Documentation: [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
+> * Repository: [github.com/edgesentry/ontographia](https://github.com/edgesentry/ontographia)
 
 ---
 
-## Executive Summary
+Enterprise knowledge graphs (manufacturing bills of materials, multi-tier supply chains, quality and asset data) are built around relationships. Business teams increasingly want to ask those graphs questions in plain language.
 
-Enterprise knowledge graphs—spanning manufacturing Bills of Materials (BOM), multi-tier supply chain traceability, quality assurance, and asset management—are built around relationships. As enterprise generative AI matures, business demand for querying these deeply interconnected graph structures using natural language has surged.
+Letting an AI write the database query from scratch is hard to approve in governed environments. The model can invent names that are not in the schema, produce broken queries, mix filter values into the query text in ways that are hard to audit, or trigger expensive full-graph scans that hurt a shared database.
 
-However, deploying **raw Text-to-Cypher** directly to production remains fraught with peril. Syntax errors, schema hallucinations (inventing non-existent node labels, edge types, or property names), prompt injection vulnerabilities, and runaway Cartesian products that hang mission-critical databases make unguarded LLM generation untenable in governed environments.
+So many teams pick a hybrid. Engineers write pre-approved, parameterized query templates, register them as agent tools, and ask the model to choose the right template and fill in the parameters. That looks like a safe compromise at first. Over months, the pain moves: less "will the model invent a bad query?" and more "we cannot keep writing, reviewing, and regression-testing templates forever."
 
-To avoid these risks, engineering teams frequently adopt a **hybrid pattern**: they craft pre-approved, parameterized Cypher templates, register them as **Agent Skills (Tool Calling / Function Calling)**, and prompt the LLM to classify user queries into the right template while extracting parameters.
+Here is why that hybrid hits a maintenance wall, what recent Neo4j and NLP research still assumes, and a different hypothesis: keep the AI on structured intent only, and compile the actual query with a deterministic, ontology-constrained pipeline.
 
-At first glance, this looks like the ideal compromise between LLM adaptability and enterprise safety. Yet over months of real-world operation, the operational bottleneck quietly shifts: **from "LLM hallucination risk" to an unsustainable explosion of human template authoring, maintenance, and regression testing.**
+## Three choices teams actually make
 
-In this article (Part 1), we break down why the current hybrid architecture inevitably hits a maintenance wall, analyze recent research from the Neo4j and NLP communities, and introduce a new architectural paradigm—**the Intent-First Hypothesis**—designed to scale natural language graph interfaces without trading safety for operational paralysis.
+Teams usually land somewhere on this spectrum.
 
----
+**Let the model write the query.** High flexibility. Weak guarantees. The model sees the schema (or a large dump of it) and invents a full query. Demos look great. Production risk is high: wrong or misspelled names, intermittent syntax failures, hard-to-govern string concatenation, and runaway graph scans.
 
-## 1. The Three Approaches Encountered in Production
+**Only hand-written queries.** Maximum safety and auditability. Almost no natural-language agility. Every new nuance needs another endpoint. The product starts to feel like forms and dropdowns with an AI label.
 
-Practitioners trying to translate natural language into graph queries typically choose among three architectural patterns along a spectrum of control:
+**Hybrid: agent skills plus templates.** Engineers maintain a catalog of vetted templates. The model classifies the user's question into one of them and extracts arguments. The app binds those arguments safely and runs the query. Syntax errors drop, and tool choice is a task modern models handle well. That is why the hybrid feels like a win early on.
 
-* **1. 100% Non-Deterministic (Raw Text-to-Cypher):** High agility, zero safety guarantees.
-* **2. The Current Hybrid (Agent Skills + Templates):** High safety, fragile scaling bottleneck.
-* **3. 100% Deterministic (Handcrafted Cypher):** 100% safe, zero agility.
+## Why templates become the wall
 
-### 1.1 100% Non-Deterministic (Raw Text-to-Cypher)
-The LLM receives the graph schema (or a serialized graph definition) alongside the user's natural language question in its prompt, and is instructed to generate an executable Cypher query from scratch.
+In the hybrid, flexibility is counted in templates. A few examples from a supply-chain setting:
 
-* **Advantages:** Unmatched expressive freedom. The model can dynamically compose complex `MATCH`, `WHERE`, `WITH`, and aggregation clauses for arbitrary questions.
-* **Production Failure Modes:**
-  * **Schema Hallucination:** The model fabricates node labels, relationship types, or slightly misspelled property names (e.g., generating `plantId` or `factory_code` instead of the canonical `plant_id`).
-  * **Syntax & Semantic Failures:** Bracket mismatches, invalid type conversions, or illegal clause orderings occur intermittently.
-  * **Security & Injection Risks:** Filtering values are frequently concatenated directly into Cypher strings, making query governance and injection prevention nearly impossible.
-  * **Database Denial of Service:** Missing label qualifiers or unbounded variable-length path expansions (`-[*]-`) cause catastrophic full-graph scans and Cartesian products that lock production database instances.
+* "Who is the primary supplier of Component A?" → template 1
+* "Expand secondary suppliers for Component A." → template 2
+* "List suppliers of Component A at domestic plants." → template 3
+* "Which SKUs break if Supplier X stops?" → template 4
 
-While raw Text-to-Cypher makes for an impressive prototype demo, enterprise security and platform teams will rarely approve it for mission-critical production systems.
+Users combine filters, path depth, aggregations, and sort orders in ways catalogs never finish covering. Each unexpected phrasing becomes another engineering ticket: "please add a template."
 
-### 1.2 100% Deterministic (Handwritten / Fixed Queries)
-Engineers write, index-tune, and hardcode predefined Cypher queries in code, safely binding runtime parameters via prepared statements.
+Schemas also change. Labels rename, junction nodes appear, properties split. One schema change can mean auditing many templates, rewriting them, updating tool descriptions so the model still picks the right one, and re-running classification tests.
 
-* **Advantages:** 100% execution safety, guaranteed determinism, complete auditability, and predictable latency.
-* **Production Failure Modes:**
-  * **Zero Natural Language Agility:** The system cannot accommodate query variations, slight nuance changes, secondary filter criteria, or altered sort orders.
-  * **Degrades to a Standard Form UI:** If every nuance requires a dedicated query endpoint, the system offers no real AI agent value over traditional UI forms and filter dropdowns.
+The hybrid does not remove the core tension. It moves friction from model risk at runtime to human template authoring and regression cost.
 
-### 1.3 Current Hybrid (Agent Skills + Template Selection)
-To bypass the extremes of raw generation and rigid hardcoding, most teams settle on this pattern:
+## What recent research helps, and what it still assumes
 
-1. Engineers author a library of pre-vetted **Cypher templates** for anticipated business use cases.
-2. Each template is wrapped in an **Agent Skill / Tool definition** with parameter schemas and natural language descriptions.
-3. Upon receiving a user prompt, the LLM performs **intent classification and slot filling** via tool calling, choosing which template to invoke and extracting arguments.
-4. The application safely binds these arguments into the selected template and executes it against Neo4j.
+The Neo4j and broader Text-to-query community has been working the same tension. Three lines matter for this series.
 
-Because tool classification is a well-conditioned task for modern frontier LLMs and syntax errors are eliminated, this hybrid pattern feels like an engineering triumph—initially.
+**Schema filtering.** Large schemas in the prompt hurt attention and raise misclassification. Approaches that prune the schema before prompting (exact match, named-entity cues, similarity) reduce that load. Key source: Ozsoy (2025), [Enhancing Text2Cypher with Schema Filtering](https://arxiv.org/abs/2505.05118).
 
----
+**Iterative refinement.** One-shot generation is weak for multi-hop questions. Checkers, formal verifiers, and database feedback drive a verify-and-correct loop. Key source: Neo4j Developer Blog (2025), [Explore iterative refinement for Text2Cypher](https://neo4j.com/blog/developer/iterative-refinement-for-text2cypher/).
 
-## 2. The Template Maintenance Wall
+**Difficulty-adaptive spend.** Not every question deserves the same compute. Easy questions get a cheap pass; hard ones get more context and retries. Sources include [Wang et al. (NAACL 2025 Findings)](https://aclanthology.org/2025.findings-naacl.383/) and [Damani et al. (ICLR 2025)](https://arxiv.org/abs/2410.04707).
 
-After several months in production, the hybrid approach invariably hits an operational ceiling.
+These ideas are useful. They still share a starting assumption: the model writes the query string. Post-check loops then struggle with three structural issues.
 
-### The Granularity of Flexibility is Bound 1:1 to Template Count
-In the hybrid model, the agent’s expressive range is strictly limited to the templates human engineers have manually constructed:
+1. **Silent false positives.** A query can be syntactically fine, match the schema, and run without error while following the wrong business path or aggregating the wrong fields. Formal checkers do not see unspoken business rules.
+2. **Filter values mixed into query text.** That complicates strict parameter binding and security review.
+3. **Unstable query shape over time.** The same question can produce different query structures on different runs, which makes performance and compliance review harder.
 
-* *"Who is the primary supplier of Component A?"* → Template 1
-* *"Recursively expand secondary suppliers for Component A."* → Template 2
-* *"List suppliers of Component A restricted to domestic plants."* → Template 3
-* *"What SKUs are impacted if Supplier X halts operations?"* → Template 4
+Filtering and repair on top of unconstrained generation are helpful treatments. They are not a full architectural answer for environments that need both language flexibility and deterministic queries.
 
-In reality, business users combine filters, path depths, aggregation dimensions, and sort orders in combinatorial permutations. Every time a business user phrases an unexpected question, the engineering backlog receives yet another request: *"Please create a new Cypher template."*
+## How the options compare on what enterprises care about
 
-### Regression Costs Under Schema Evolution
-Enterprise graphs and ontologies are living artifacts. Business growth triggers constant schema migrations: renaming node labels, introducing intermediate junction nodes, or splitting properties.
+**Hand-written queries only:** almost no language agility; strong safety and auditability; maintenance grows with each business question pattern.
 
-When a single entity or relationship in the schema changes, developers must:
-1. Manually audit dozens or hundreds of sprawling Cypher templates to identify affected queries.
-2. Rewrite the Cypher strings and pass code reviews.
-3. Update the natural language descriptions across Agent Skill definitions to help the LLM maintain clear classification boundaries.
-4. Re-run extensive classification evaluation sets to prevent tool-selection regression.
+**Model writes the query:** high agility; fragile safety; frequent schema invention; ongoing prompt and guardrail work; weak auditability.
 
-> **The Shift of Friction:**  
-> • **Raw Text-to-Cypher:** Plagued by runtime LLM hallucinations, security injections, and DB crash risks.  
-> • *(Mitigate risk by hardcoding templates)*  
-> • **Hybrid Approach (Agent Skills):** Trapped in an endless cycle of human template authoring, maintenance, and regression testing.
+**Hybrid templates:** agility capped by the catalog; strong safety inside approved templates; maintenance dominated by template growth and regression.
 
-**The hybrid approach does not solve the root problem. It merely transfers the friction from generative hallucination risk to human engineering overhead.**
+**Research overlays (filtering + refinement):** higher agility; safety depends on after-the-fact checks; silent false positives remain; more moving parts to operate.
 
----
+**Intent-first (Ontographia, proposed here):** the model only fills a structured description of the question; names must exist in the ontology; the query string is produced by a fixed compiler with values bound as parameters; teams maintain the ontology rather than a growing template catalog. Details of that pipeline are in Part 2 and in the [architecture guide](https://edgesentry.github.io/ontographia/architecture/).
 
-## 3. Insights from Recent Neo4j and Academic Research
+What those environments need at once:
 
-This tension between non-deterministic generation and template maintenance is a universal challenge across the graph database community. The Neo4j engineering and research ecosystem has produced significant work addressing this exact friction.
+1. Remove the failure modes that come from letting the model invent query text (invented names, syntax failures, injection-prone string building, runaway scans).
+2. Remove the exponential template maintenance that makes the hybrid stop scaling.
 
-Here are the three major research frontiers:
+## The Intent-first hypothesis
 
-### 1. Schema Filtering
-* **Key Source:** Ozsoy (2025) – [*Enhancing Text2Cypher with Schema Filtering*](https://arxiv.org/abs/2505.05118)
-* **The Insight:** Dumping massive enterprise schemas into LLM prompts degrades model attention and causes severe misclassification.
-* **The Technique:** Uses exact matching, Named Entity Recognition (NER), and semantic vector similarity to dynamically prune the schema subgraph before feeding it into the prompt.
+The idea is to separate *what the user wants to know* from *how the database query is assembled*.
 
-### 2. Iterative Refinement
-* **Key Source:** Neo4j Developer Blog (2025) – [*Explore iterative refinement for Text2Cypher*](https://neo4j.com/blog/developer/iterative-refinement-for-text2cypher/)
-* **The Insight:** Single-shot query generation without self-correction is unrealistic for multi-hop graph queries.
-* **The Technique:** Evaluates generated Cypher using static syntax checkers, formal semantic verifiers (CyVer), and database execution feedback, executing a self-healing *Verify → Correct* loop.
+**Application layer (where the model lives).** The user asks in natural language. The model outputs a structured Intent: which concepts to start from, which relationships to follow, which filters apply, and what to return. It does not write the database query.
 
-### 3. Difficulty-Adaptive Spend
-* **Key Source:** [Wang et al. (NAACL 2025 Findings)](https://aclanthology.org/2025.findings-naacl.383/), [Damani et al. (ICLR 2025)](https://arxiv.org/abs/2410.04707)
-* **The Insight:** Treating all queries with the same compute budget is inefficient.
-* **The Technique:** Predicts query difficulty dynamically: simple questions execute in a single low-cost pass, while complex analytical queries receive multi-turn reflection, richer schema context, and verification budgets.
+**Core layer (fixed rules).** Every name in that Intent is checked against a Canonical Ontology, the single vocabulary source of truth. Unknown vocabulary is rejected. A validated Intent is lowered into an internal query structure and emitted as parameterized Cypher. The same ontology, Intent, and dialect always produce the same query text and parameter map. The application then runs that against Neo4j.
 
-### The Power—and Limitations—of Post-Hoc Verification
-These research tracks offer valuable insights for production engineering:
-* Dynamic pruning reduces classification errors (motivating **Schema Filtering**).
-* Verification loops catch syntactic mistakes (motivating **Iterative Refinement**).
+Four design principles follow.
 
-However, these approaches share a foundational assumption: **the LLM is still tasked with generating the raw Cypher query string directly.**
+1. **The model only extracts Intent.** Its job is mapping language into a closed, structured form, not inventing query syntax.
+2. **The ontology is the gate.** Class, relationship, and property names must exist in the registered ontology before any query is built.
+3. **Query text is compiled, not sampled.** Filter values travel as parameters, which removes a common injection path.
+4. **Research ideas move to the Intent boundary.** Schema filtering becomes sending a smaller ontology slice with the prompt. Iterative refinement becomes revising the Intent after execution feedback, then validating and compiling again. Difficulty-adaptive spend becomes spending more retries only when early attempts fail. Part 2 and Part 3 take these up in turn.
 
-As long as the model writes Cypher strings, post-hoc verification loops cannot fully eliminate three structural risks:
+Under this split, new questions that stay inside the ontology's vocabulary do not each need a new template. The database never sees model-written query text.
 
-1. **The Silent False Positive Problem:** A query can be syntactically immaculate, conform to schema constraints, and execute successfully in Neo4j without error—yet traverse completely incorrect business paths or aggregate the wrong attributes. Formal verifiers cannot detect semantic mismatch against unexpressed business rules.
-2. **Fragile Parameter Separation:** Literal filter values remain intertwined with query syntax, compromising strict parameter binding and making security audits cumbersome.
-3. **Non-Deterministic Auditability:** Repeated queries over time may yield subtly different Cypher structures, complicating performance profiling, query planning, and compliance audits.
+## What Parts 2 and 3 cover
 
-Modern research improvements, while mathematically and empirically sound, act primarily as **symptomatic treatments** on top of an unconstrained generative foundation. Bridging enterprise determinism with natural language flexibility requires a deeper architectural shift.
+* **Part 2**. How the layers are split, why the model and database driver stay outside the core, how the three research ideas map onto Intent handling, and what a small real end-to-end run showed. Implementation detail lives in the docs and repo, not in the article body.
+* **Part 3**. Stress tests on ontologies with hundreds to thousands of properties (including the silent false-positive case), public Neo4j benchmark schemas, measured token and accuracy effects of subsetting, and an honest list of what the numbers do not prove.
+
+## Takeaways
+
+* Raw "model writes the query" is hard to govern; hand-written-only is too rigid for natural language.
+* The popular hybrid moves the bottleneck to template authoring and regression.
+* Schema filtering and iterative repair help, but while the model still writes query text, silent wrong-but-valid results remain.
+* Intent-first keeps language flexibility in a structured description and keeps query assembly deterministic and ontology-checked.
+
+If you want the mechanism next, continue to Part 2. If you want the measurements, skip to Part 3. To try the open-source project, start at the [documentation](https://edgesentry.github.io/ontographia/) or the [repository](https://github.com/edgesentry/ontographia).
 
 ---
 
-## 4. Architectural Comparison: The Problem Landscape
-
-How do the prevailing methodologies compare against the proposed **Intent-First** architecture? Here is the breakdown across key enterprise criteria:
-
-### Approach 1: 100% Deterministic (Handcrafted / Fixed Queries)
-* **Natural Language Agility:** ✕ Virtually zero (rigid dropdown-level experience).
-* **Syntax & Injection Safety:** ◎ Guaranteed 100%.
-* **Schema Hallucination:** None.
-* **Maintenance Burden:** Linear with the number of business queries.
-* **Execution Auditability:** ◎ 100% deterministic.
-
-### Approach 2: 100% Non-Deterministic (Raw Text-to-Cypher)
-* **Natural Language Agility:** ◎ Extremely high.
-* **Syntax & Injection Safety:** ✕ Highly fragile (injection vectors & Cartesian blowups).
-* **Schema Hallucination:** Frequent and severe.
-* **Maintenance Burden:** Ongoing prompt engineering and fragile guardrails.
-* **Execution Auditability:** ✕ Non-deterministic (stochastic variations).
-
-### Approach 3: Current Hybrid (Agent Skills + Template Selection)
-* **Natural Language Agility:** △ Strictly bounded by pre-written template catalog.
-* **Syntax & Injection Safety:** ○ Guaranteed by approved templates.
-* **Schema Hallucination:** None (within template bounds).
-* **Maintenance Burden:** **Exponential template explosion & heavy regression overhead.**
-* **Execution Auditability:** ○ Trackable per template ID.
-
-### Approach 4: Advanced Research (Schema Filtering + Iterative Refinement)
-* **Natural Language Agility:** ○ High.
-* **Syntax & Injection Safety:** △ Relies on post-hoc verification loops.
-* **Schema Hallucination:** Reduced, but silent false positives persist.
-* **Maintenance Burden:** Complex verification rules, schema pruners, and repair prompts.
-* **Execution Auditability:** △ Fluctuates across retry loops.
-
-### Approach 5 (Proposed): Intent-First (Ontographia)
-* **Natural Language Agility:** **◎ Combinatorial freedom across the entire ontology vocabulary.**
-* **Syntax & Injection Safety:** **◎ 100% guaranteed by deterministic AST compiler and prepared `$param_N` bindings.**
-* **Schema Hallucination:** **None (strictly intercepted at the ontology boundary).**
-* **Maintenance Burden:** **Single Source of Truth (maintain only the Canonical Ontology definition).**
-* **Execution Auditability:** **◎ 100% deterministic AST-to-Cypher emission.**
-* **LLM Responsibility:** **Confined solely to structured Intent JSON extraction.**
-
-What enterprise environments require is the simultaneous achievement of two non-negotiable criteria:
-> **1. Completely eliminate non-deterministic failure modes (hallucinations, syntax errors, security injections, Cartesian blowups).**  
-> **2. Eliminate the exponential maintenance overhead of manual templates, enabling the system to scale safely.**
-
----
-
-## 5. The Solution: The Intent-First Hypothesis
-
-To resolve this dilemma, we must decouple natural language flexibility from template count.
-
-This is the core premise of **Ontographia**: **The Intent-First Hypothesis**.
-
-*(Refer to the header illustration above for the visual pipeline)*
-
-### The Two-Tier Architectural Pipeline
-
-**Tier 1: Application & Agent Layer (Stochastic / LLM)**
-* User submits a **Natural Language Query**.
-* The LLM acts exclusively as an Intent Extractor, outputting a structured **Intent JSON** (specifying target concepts, traversal relationships, and filter conditions).
-
-**Tier 2: Ontographia Core Layer (100% Deterministic Engine)**
-* **Step A (Validation):** `validate_intent()` checks all entities, relationships, and attributes against the **Canonical Ontology (Single Source of Truth)**. Any unrecognized vocabulary is rejected immediately.
-* **Step B (AST Lowering):** The validated intent is converted into a dialect-neutral **Query AST** (Abstract Syntax Tree).
-* **Step C (Deterministic Emission):** The AST compiles deterministically into production-grade Cypher, automatically binding literal values into parameterized slots (`$param_N`).
-* **Step D (Execution):** The hardened Cypher executes safely against the **Neo4j Database**.
-
-### Four Foundational Design Principles
-
-1. **Restrict the LLM Strictly to Intent Extraction (Intent JSON):**  
-   The LLM never writes a single token of Cypher. Its sole responsibility is to map user natural language into an abstract, structured schema (`Intent JSON`): specifying target entity concepts, traversal relationships, filter conditions, and projected attributes.
-
-2. **The Canonical Ontology as the Single Source of Truth (SSoT):**  
-   Every class name, relationship type, and attribute key specified in the `Intent JSON` is mechanically validated against the registered Canonical Ontology. Any hallucinated vocabulary is rejected at the gate before reaching the query generator.
-
-3. **100% Deterministic Cypher Compilation via Query AST:**  
-   Validated Intent objects are transformed into a dialect-neutral Abstract Syntax Tree (`Query AST`), which deterministically emits optimized, safe Cypher (e.g., Cypher 25). Filter values are automatically extracted and bound to `$param_N` parameter maps, structurally eliminating injection vectors.
-
-4. **Mapping Research Insights to the Intent Layer:**  
-   The breakthroughs from modern research (Schema Filtering, Iterative Refinement) are retained, but relocated. Instead of filtering Cypher strings or repairing invalid syntax, we apply these techniques at the **Intent boundary in the application layer**:
-   * *Schema Filtering* becomes **dynamic ontology subsetting** before prompt injection.
-   * *Iterative Refinement* becomes **Intent-level schema realignment** guided by database execution feedback (such as empty result sets on valid syntax).
-
-Under this architecture, the agent handles user queries across the **combinatorial vocabulary space of the ontology**. Teams no longer build new templates for each user phrasing, while completely insulating the database from stochastic query generation.
-
----
-
-## 6. Series Roadmap
-
-In this three-part series, we share the complete architecture, implementation details, and benchmark evaluations of the Intent-first paradigm:
-
-* **Ontographia Part 2 - Intent-First Design and Implementation: Deterministic Cypher Assembly** *(Upcoming)*  
-  * Architectural boundaries: Why the LLM must remain outside the core engine.  
-  * Technical deep-dive into the Canonical Ontology Model (COM), Intent JSON Schema, AST structure, and parameterized code generation.  
-  * Three extension designs mapping recent Neo4j research (Filtering, Refine, Adaptive Spend) onto the Intent layer.
-* **Ontographia Part 3 - Empirical Validation and Roadmap: Large-Scale Ontology Evaluation and External Validity** *(Upcoming)*  
-  * The reality of "Silent False Positives" in massive enterprise ontologies: why syntactically valid queries still misfire.  
-  * Empirical validation across three hypotheses (H1: 91% token reduction and error elimination via dynamic subsetting; H2: Feedback-driven self-healing of Empty@Valid states; H3: Difficulty-adaptive allocation for minimal TCO).  
-  * External validity validation across 15 official Neo4j public benchmark databases.
-
----
-
-## Key Takeaways
-
-* In natural language graph querying, **raw Text-to-Cypher is too hazardous, while handcrafted queries are too rigid**.
-* The popular **hybrid model (Agent Skills + Template Selection) merely relocates friction**, shifting the bottleneck to human template maintenance and regression management.
-* SOTA research methods like Schema Filtering and Iterative Refinement provide critical insights, but remain symptomatic as long as the LLM directly generates Cypher.
-* The sustainable path forward is **Intent-First**: **LLMs extract structured Intent; an ontology-constrained compiler deterministically produces Cypher.**
-
-In **Part 2** (coming soon), we explore the architectural design and concrete implementation of Ontographia, covering the high-performance Rust core, lightweight bindings, and the application-layer LLM execution loop.
-
-👉 **Next: Look out for Part 2 — Intent-First Design and Implementation (Coming soon)**
-
----
-
-*Open Source Project:* [github.com/edgesentry/ontographia](https://github.com/edgesentry/ontographia)  
-*Documentation:* [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)  
-*Author:* Yohei Onishi  
+*Open source project:* [github.com/edgesentry/ontographia](https://github.com/edgesentry/ontographia)
+*Documentation:* [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
+*Author:* Yohei Onishi
 *Tags:* `#Neo4j #Cypher #KnowledgeGraph #GraphRAG #AIAgents #EnterpriseAI #DataEngineering`

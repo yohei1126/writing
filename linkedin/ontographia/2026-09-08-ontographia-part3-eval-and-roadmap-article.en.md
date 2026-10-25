@@ -2,45 +2,48 @@
 
 > **Series overview: Ontographia**
 >
-> Teams that query a graph database such as Neo4j in natural language usually choose between letting an LLM write Cypher and restricting it to a catalog of handwritten templates. This series examines the common compromise (Agent Skills plus template selection) and proposes another split: the LLM extracts a structured Intent JSON, and an ontology-constrained, deterministic pipeline compiles the Cypher ([Ontographia](https://github.com/edgesentry/ontographia)).
+> Teams that query a graph database such as Neo4j in natural language usually choose between letting an AI write the query and locking the system to handwritten templates. This series examines the common compromise (agent skills plus template selection) and proposes another split: the AI extracts a structured Intent, and an ontology-checked, deterministic pipeline compiles the Cypher ([Ontographia](https://github.com/edgesentry/ontographia)).
 >
-> * **Part 1: [The Graph AI Dilemma: Let LLMs Write Cypher or Suffer Template Maintenance Hell?](https://www.linkedin.com/pulse/graph-ai-dilemma-let-llms-write-cypher-suffer-template-yohei-onishi-hj8kc/)**
->   *Focus: production bottlenecks, a review of recent research, and the Intent-first hypothesis*
-> * **Part 2: [The LLM Never Writes Cypher: Intent-First Design and Implementation]([LINK TO PART 2])**
->   *Focus: separation of the core and app layers, how the compiler works, and the execution loop*
-> * **Part 3: Evaluation and Roadmap: Large-Scale Ontology Stress Tests and Public Datasets** *(This article)*
->   *Focus: what the measurements support, what they do not, and what comes next*
+> * **Part 1: [The Graph AI Dilemma: Let LLMs Write Cypher or Suffer Template Maintenance Hell?](https://www.linkedin.com/pulse/graph-ai-dilemma-let-llms-write-cypher-suffer-template-yohei-onishi-hj8kc/)**. Production bottlenecks, research review, Intent-first hypothesis
+> * **Part 2: [The LLM Never Writes Cypher: Intent-First Design and Implementation]([LINK TO PART 2])**. How the split works in practice
+> * **Part 3: Evaluation and Roadmap** *(This article)*. What the measurements support, what they do not, and what comes next
 >
-> * Project documentation: [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
-> * Open source repository: [github.com/edgesentry/ontographia](https://github.com/edgesentry/ontographia)
+> * Documentation: [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
+> * Repository: [github.com/edgesentry/ontographia](https://github.com/edgesentry/ontographia)
 
 ---
 
-Ontology validation stops names that do not exist. It does nothing about a real name that is the wrong one, and once an ontology grows to a few hundred properties, those wrong-but-real names are everywhere in the prompt. In my stress test, every one of 40 deliberately wrong Intents compiled cleanly at 200 properties and again at 2,000.
+Ontology validation stops names that do not exist. It does nothing about a real name that is the wrong one. Once an ontology grows to a few hundred properties, those wrong-but-real names are everywhere in the prompt. In my stress test, every one of 40 deliberately wrong Intents compiled cleanly at 200 properties and again at 2,000.
 
-What helped was sending the model only the part of the ontology that the question touches. On the 2,000-property ontology it cut prompt tokens by about 91%. With Gemini 3.7 Flash it raised the rate of correct property choices by 12.5 points while all 40 questions still compiled. This article covers those results, the parts that are weaker (the public-benchmark exact-match score is about 3%), a re-run on the published package with a newer model that did not come out better, and the roadmap.
+What helped was sending the model only the part of the ontology that the question touches. On the 2,000-property ontology it cut prompt tokens by about 91%. With Gemini 3.7 Flash it raised the rate of correct property choices by 12.5 points while all 40 questions still compiled. This article covers those results, the weaker parts (exact match on a public-benchmark spot check is about 3%), a re-run on the published package with a newer model that did not come out better overall, and the roadmap.
+
+Harness scripts, baselines, and full tables live under `examples/llm/eval/` in the repository. How to run each track is in the [Evaluation guide](https://edgesentry.github.io/ontographia/evaluation/).
 
 ## What Part 2 left to measure
 
-[Part 2]([LINK TO PART 2]) moved three ideas from Text2Cypher research to the Intent layer: ontology subsetting, Intent repair from execution feedback, and staged retries that spend more only on hard questions. Each one is a hypothesis about cost or accuracy, so this part tests them as three hypotheses, H1 to H3, plus a fourth question: does the Canonical Ontology Model (COM) work on schemas I did not write?
+[Part 2]([LINK TO PART 2]) moved three ideas from Text-to-Cypher research to the Intent layer: ontology subsetting, Intent repair from execution feedback, and staged retries that spend more only on hard questions. Each one is a hypothesis about cost or accuracy, so this part tests them as H1 to H3, plus a fourth question: does the Canonical Ontology Model work on schemas I did not write?
 
-I fixed the pass criteria in code before running anything. For H1 (subsetting), "supported" meant that on the 2,000-property ontology, Property Hit (the share of Intents that picked the right property) beat the full schema by at least 10 points, p95 prompt tokens dropped by at least 30%, and compile success did not fall. H2 (repair) needed final execution success to improve by at least 20 points, with every emitted query identical to what the compiler builds. H3 (staged retries) needed at least 30% fewer tokens on easy questions with no loss in quality.
+I fixed the pass criteria in code before running anything.
 
-## Two tracks, and why most of it runs on a mechanical arm
+* **H1 (subsetting):** on the 2,000-property ontology, the share of Intents that picked the right property (Property Hit) beats the full schema by at least 10 points, p95 prompt tokens drop by at least 30%, and compile success does not fall.
+* **H2 (repair):** final execution success improves by at least 20 points, and every emitted query matches what the compiler builds.
+* **H3 (staged retries):** at least 30% fewer tokens on easy questions with no loss in quality.
 
-Track A is a synthetic stress test on the manufacturing domain. It uses 40 questions with gold Intents and three versions of the ontology: small (16 properties), mid (200) and large (2,000). The larger versions are padded with near-duplicate distractors such as `plant_id` next to `plant_code` and `factory_id`, the kind of overlap that builds up in real enterprise graphs after years of system integration. Injecting them on purpose makes it possible to see exactly when and why a wrong pick happens.
+## Two tracks, and why most of Track A is a mechanical arm
 
-Track B uses public data: 15 database schemas from Neo4j's [text2cypher-2025v1](https://huggingface.co/datasets/neo4j/text2cypher-2025v1) dataset, covering movies, social graphs, supply chains, healthcare and more. It addresses the obvious objection that the design only works on a schema I built for it.
+**Track A** is a synthetic stress test on a manufacturing domain. It uses 40 questions with gold Intents and three ontology sizes: small (16 properties), mid (200), and large (2,000). The larger versions are padded with near-duplicate distractors such as `plant_id` next to `plant_code` and `factory_id`, the kind of overlap that builds up in real enterprise graphs after years of system integration. Injecting them on purpose makes it possible to see when a wrong pick happens.
 
-Most of Track A runs on what I call a mechanical arm. "Arm" is the clinical-trial word for one experimental condition. The mechanical arm replaces the LLM with deterministic simulation rules, so a failure points at the pipeline (the validator, the subsetting, the repair state machine) rather than at sampling noise or a silent model update. It tests whether the control loops work. It says nothing about how capable a real model is, so for H1 I also ran a live arm with Gemini 3.7 Flash through LiteLLM at temperature 0.
+**Track B** uses public data: 15 database schemas from Neo4j's [text2cypher-2025v1](https://huggingface.co/datasets/neo4j/text2cypher-2025v1) dataset (movies, social graphs, supply chains, healthcare, and more). It answers the objection that the design only works on a schema I built for it.
+
+Most of Track A runs on what I call a mechanical arm. "Arm" is the clinical-trial word for one experimental condition. The mechanical arm replaces the live model with fixed simulation rules, so a failure points at the pipeline (validator, subsetting, repair state machine) rather than at sampling noise or a silent model update. It tests whether the control loops work. It says nothing about how capable a real model is, so for H1 I also ran a live arm with Gemini 3.7 Flash through LiteLLM at temperature 0.
 
 ## At 200 properties, wrong names stop being errors
 
 The baseline sends the full schema and feeds the pipeline Intents that pick a distractor instead of the right property.
 
-On the small ontology there are no distractors, so a wrong name is simply unknown and validation rejected all 40. On mid and large, the same 40 wrong Intents passed validation and compiled to Cypher, 40 out of 40 in both cases. The validator can check that a name exists in the ontology. It cannot check that the name is the one the user meant.
+On the small ontology there are no distractors, so a wrong name is simply unknown and validation rejected all 40. On mid and large, the same 40 wrong Intents passed validation and compiled to Cypher, 40 out of 40 in both cases. The validator can check that a name exists. It cannot check that the name is the one the user meant.
 
-This is the silent false positive from Part 1, reproduced on demand. The full prompt also grows quickly: 1,359 tokens on small, 2,460 on mid and 13,710 on large.
+That is the silent false positive from Part 1, reproduced on demand. The full prompt also grows quickly: 1,359 tokens on small, 2,460 on mid, and 13,710 on large.
 
 ## Showing the model less: subsetting on the large ontology
 
@@ -56,11 +59,11 @@ The arm is built so that only distractors visible in the prompt cause wrong pick
 
 With Gemini 3.7 Flash on the large ontology, the full schema scored 0.82 Property Hit and compiled 33 of 40. `subset_fallback` scored 0.95 and compiled 40 of 40, a gain of 12.5 points with the same 1,247-token p95. H1 passed on the live arm too.
 
-The subset on its own did worse: 0.78 and 32 of 40, about 5 points below the full schema, because some questions needed vocabulary the exact-match subset missed. I take that as the practical lesson of H1. Subsetting needs the fallback in production. The model never invented a near-duplicate name it had not been shown.
+The subset on its own did worse: 0.78 and 32 of 40, about 5 points below the full schema, because some questions needed vocabulary the exact-match subset missed. That is the practical lesson of H1. Subsetting needs the fallback in production. The model never invented a near-duplicate name it had not been shown.
 
-## Recovering from empty results without touching Cypher
+## Recovering from empty results without rewriting Cypher
 
-An Intent can be valid, compile, and still return nothing, for example because a filter uses a plant code that does not exist. Text2Cypher research usually hands the failed Cypher back to the model to fix. Ontographia hands back the execution result and asks for a corrected Intent, which then goes through validation and compilation again.
+An Intent can be valid, compile, and still return nothing, for example because a filter uses a plant code that does not exist. Text-to-Cypher research usually hands the failed Cypher back to the model to fix. Ontographia hands back the execution result and asks for a corrected Intent, which then goes through validation and compilation again.
 
 To test the loop, I took the 40 gold Intents and broke only their filter values, so every query compiled and every simulated execution came back empty. Without feedback, final execution success was 0. With feedback, it was 1.00, and every emitted query matched what the compiler builds from the corrected Intent. Unbroken Intents were included as a control to check that repair does not fire when nothing is wrong.
 
@@ -70,17 +73,17 @@ H2 is supported on the mechanical arm. The arm shows that the loop recovers when
 
 The adaptive policy starts with the subset and one retry, and escalates to the full schema with up to five retries only when validation fails. The control always uses the full schema with five retries.
 
-On easy questions on the large ontology, adaptive matched the control on quality (Property Hit 1.00, 40 of 40 compiled) and cut p95 tokens from 13,710 to 1,247, the same 91% reduction. On hard questions, built so the subset is missing needed vocabulary, adaptive escalated every time and recovered, at an average of 2 LLM calls instead of 1.
+On easy questions on the large ontology, adaptive matched the control on quality (Property Hit 1.00, 40 of 40 compiled) and cut p95 tokens from 13,710 to 1,247, the same 91% reduction. On hard questions, built so the subset is missing needed vocabulary, adaptive escalated every time and recovered, at an average of 2 model calls instead of 1.
 
 H3 is supported on the mechanical arm. The live H1 runs already use the same subset-first path (`schema_policy=auto`), so it does not require a separate difficulty classifier.
 
 ## Fifteen public Neo4j databases
 
-All 15 Track B schemas converted to the COM and loaded, 15 out of 15. Average coverage was 100% for relationship types, about 96% for node labels and about 81% for properties. The missing properties come mainly from inconsistent wording in the source schema text and from noise in my extraction, rather than from something the COM cannot represent.
+All 15 Track B schemas converted to the Canonical Ontology Model and loaded, 15 out of 15. Average coverage was 100% for relationship types, about 96% for node labels, and about 81% for properties. The missing properties come mainly from inconsistent wording in the source schema text and from noise in my extraction, rather than from something the model cannot represent.
 
 Loading a schema is the easy part, so I also ran a spot check of answers. I sampled 60 questions (seed 53) for the movies and recommendations databases, ran question to Intent to Cypher against `demo.neo4jlabs.com` with Gemini 3.7 Flash, and compared the rows with those returned by the dataset's gold Cypher. 41 of 60 compiled (about 68%). Exact row-set matches were 1 of 38, about 3%.
 
-That number is low. The gold answers are Cypher, not Intents, so exact match mixes three things together: Intent extraction errors, gaps in schema conversion, and Cypher that is correct but written differently from the gold query. The spot check shows that the pipeline runs end to end on someone else's schema. It is not a state-of-the-art claim, and it is not evidence that the design generalizes well on answer quality.
+That number is low. The gold answers are Cypher, not Intents, so exact match mixes three things: Intent extraction errors, gaps in schema conversion, and Cypher that is correct but written differently from the gold query. The spot check shows that the pipeline runs end to end on someone else's schema. It is not a state-of-the-art claim, and it is not evidence that the design generalizes well on answer quality.
 
 One more generalization step: the business-term repair rules that started as manufacturing heuristics now live in a YAML mapping, and tests confirm the same engine works with a non-manufacturing (movies) mapping.
 
@@ -94,7 +97,7 @@ How the ontology was sent made a bigger difference than which model read it. On 
 
 Neither run had a "no ontology" condition, and `full` also puts the whole ontology in the prompt. So the result says that the same ontology gives different Property Hit and token counts depending on how it is sent. It says nothing about the gain from using an ontology at all.
 
-The newer model did not win across the board. Moving from 3.7 to 3.8 helped `full` and `subset` alone (on large, `full` went from 0.65 to 0.725), but the recommended `subset_fallback` went down: Property Hit from 0.95 to 0.8875 and Compile from 40 of 40 to 37 of 40. Track B compile went from 39 of 60 to 36 of 60. If you swap models, re-run your evaluation set; a newer version can be worse on the configuration you actually use.
+The newer model did not win across the board. Moving from 3.7 to 3.8 helped `full` and `subset` alone (on large, `full` went from 0.65 to 0.725), but the recommended `subset_fallback` went down: Property Hit from 0.95 to 0.8875 and compile from 40 of 40 to 37 of 40. Track B compile went from 39 of 60 to 36 of 60. If you swap models, re-run your evaluation set; a newer version can be worse on the configuration you actually use.
 
 ## What these results do not show
 
@@ -102,31 +105,25 @@ Each live condition ran once, so I cannot say how stable any of these difference
 
 The hallucination claim stays narrow. Names that are not in the ontology are stopped before anything reaches the database. A real name chosen wrongly can still pass, which is the whole point of the Track A baseline, and factual errors are out of scope. Subsetting reduces the chance of a wrong pick by hiding distractors. It does not eliminate it, and the exact-match subset still misses synonyms.
 
-## Roadmap: what is done, what I am not claiming, what is next
+## Roadmap: done, not claimed, next
 
-Done: H1 to H3 on the mechanical arm, live H1 with Gemini 3.7 Flash using `subset_fallback`, all 15 public schemas loaded into the COM, the Exec Match spot check with its limits, a generalized repair mapping, and the re-run on the published package with two model versions.
+**Done:** H1 to H3 on the mechanical arm; live H1 with Gemini 3.7 Flash using `subset_fallback`; all 15 public schemas loaded; the execution-match spot check with its limits; a generalized repair mapping; and the re-run on the published package with two model versions.
 
-Deliberately not claimed: state-of-the-art Exec Match on Track B, live results across model families (everything here is Gemini; GPT, Claude and others are open for anyone to try), and full live coverage of H2 and H3.
+**Deliberately not claimed:** state-of-the-art execution match on Track B; live results across model families (everything here is Gemini; other families are open for anyone to try); and full live coverage of H2 and H3.
 
-Next, with no dates attached:
+**Next, with no dates:**
 
 1. Gold answers written as Intents, and a metric that accepts semantically equivalent Cypher instead of requiring an exact row match.
 2. Subsetting that handles synonyms and spelling variants of domain terms, not only exact matches.
 3. Trials on real enterprise ontologies and production databases, covering H1 to H3 and the execution path.
 
-The [roadmap](https://github.com/edgesentry/ontographia/blob/main/docs/roadmap.md) in the repository lists what comes next.
+The repository [roadmap](https://github.com/edgesentry/ontographia/blob/main/docs/roadmap.md) lists what comes next.
 
 ## Try the evaluation on your own ontology
 
 Part 1 asked whether a natural-language interface could follow what users ask and still produce deterministic, auditable Cypher. At 2,000 properties, my answer is that validation alone is not enough, and that controlling what the model sees matters as much as checking what it writes.
 
-The harness, baselines and full result tables are in the repository under `examples/llm/eval/`, and the [Evaluation guide](https://edgesentry.github.io/ontographia/evaluation/) explains how to run each track. The H1 live arm, for example:
-
-```bash
-uv run python examples/llm/eval/run_track_a_h1_live.py --profiles mid,large --record
-```
-
-`pip install "ontographia[llm]"` installs the experimental Intent layer. If you run Track A against your own schema, I would like to know where the subset missed vocabulary and which wrong-but-real names got through; issues are open on the [repository](https://github.com/edgesentry/ontographia).
+For commands, profiles, and how to record runs, use the [Evaluation guide](https://edgesentry.github.io/ontographia/evaluation/) and the scripts under `examples/llm/eval/` (including the H1 live arm). `pip install "ontographia[llm]"` installs the experimental Intent layer. If you run Track A against your own schema, I would like to know where the subset missed vocabulary and which wrong-but-real names got through; issues are open on the [repository](https://github.com/edgesentry/ontographia).
 
 ---
 
