@@ -82,7 +82,7 @@ devto/<series>/YYYY-MM-DD-<series>-partN-<topic-slug>.yml
 
 Fields: `title`, `published` (keep `false`), `tags`, `canonical_url`, `series`, `source` (repo path of the LinkedIn article). Optional `cover_note` (not sent to the API).
 
-`scripts/devto_payload.py` reads one meta file and prints JSON (`title`, `published`, `tags`, `canonical_url`, `series`, `body_markdown`). `body_markdown` is the LinkedIn file unchanged. The script does not call the Dev.to API. After merge, a separate step registers the draft with `published: false`.
+`scripts/devto_payload.py` reads one meta file and prints JSON (`title`, `published`, `tags`, `canonical_url`, `series`, `body_markdown`). `body_markdown` is the LinkedIn file with leading cover image line(s) removed (Dev.to uses its own cover image field; the relative `../../images/...` path shows as a broken image there). The rest of the body is unchanged. The script does not call the Dev.to API. After merge, a separate step registers the draft with `published: false`.
 
 ## Link routing
 

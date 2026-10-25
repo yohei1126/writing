@@ -4,19 +4,23 @@
 Reads a devto/*.yml meta file and the LinkedIn article at its `source` path.
 Writes JSON to stdout: title, published, tags, canonical_url, series, body_markdown.
 
-body_markdown is the LinkedIn file text unchanged. cover_note is not an API field.
+body_markdown is the LinkedIn file text with leading cover image line(s) removed
+(Dev.to shows its own cover_image, and the relative image path breaks there).
+Everything else is unchanged. cover_note is not an API field.
 This script does not call the Dev.to API. It refuses published: true.
 """
 
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = ("title", "published", "tags", "canonical_url", "series", "source")
 PAYLOAD_KEYS = ("title", "published", "tags", "canonical_url", "series")
+IMAGE_LINE = re.compile(r"^!\[[^\]]*\]\([^)]*\)\s*$")
 
 
 def main(argv: list[str]) -> int:
@@ -47,10 +51,35 @@ def main(argv: list[str]) -> int:
         print(f"source article not found: {source}", file=sys.stderr)
         return 1
     payload = {key: meta[key] for key in PAYLOAD_KEYS}
-    payload["body_markdown"] = source.read_text(encoding="utf-8")
+    payload["body_markdown"] = strip_leading_cover(source.read_text(encoding="utf-8"))
     json.dump(payload, sys.stdout, ensure_ascii=False, indent=2)
     sys.stdout.write("\n")
     return 0
+
+
+def strip_leading_cover(text: str) -> str:
+    """Drop image-only lines that appear before the first body content.
+
+    Only the top block is touched: blank lines, `#` heading lines, and
+    image-only lines. Image lines there are removed together with one blank
+    line after each, so the heading is followed by a single blank line.
+    Images later in the article are kept.
+    """
+    lines = text.splitlines(keepends=True)
+    out: list[str] = []
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+        if IMAGE_LINE.match(line):
+            i += 1
+            if i < len(lines) and not lines[i].strip():
+                i += 1
+            continue
+        if line and not line.startswith("#"):
+            break
+        out.append(lines[i])
+        i += 1
+    return "".join(out + lines[i:])
 
 
 def parse_simple_yaml(text: str) -> dict:

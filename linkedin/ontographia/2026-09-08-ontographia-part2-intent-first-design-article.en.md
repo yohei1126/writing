@@ -7,7 +7,7 @@
 > Teams that query a graph database such as Neo4j in natural language usually choose between letting an AI write the query and locking the system to handwritten templates. This series examines the common compromise (agent skills plus template selection) and proposes another split: the AI extracts a structured Intent, and an ontology-checked, deterministic pipeline compiles the Cypher ([Ontographia](https://github.com/edgesentry/ontographia)).
 >
 > * **Part 1: [The Graph AI Dilemma: Let LLMs Write Cypher or Suffer Template Maintenance Hell?](https://www.linkedin.com/pulse/graph-ai-dilemma-let-llms-write-cypher-suffer-template-yohei-onishi-hj8kc/)**. Production bottlenecks, research review, Intent-first hypothesis
-> * **Part 2: The LLM Never Writes Cypher** *(This article)*. How the split works in practice
+> * **Part 2: [The LLM Never Writes Cypher](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/)** *(This article)*. How the split works in practice
 > * **Part 3: Wrong but Real**. Stress tests, public datasets, and limits of the claims
 >
 > * Documentation: [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
