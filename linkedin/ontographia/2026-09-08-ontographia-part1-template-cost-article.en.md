@@ -1,6 +1,6 @@
 # The Graph AI Dilemma: Let LLMs Write Cypher or Suffer Template Maintenance Hell? (Ontographia Part 1)
 
-![The Graph AI Dilemma: Navigating the trade-offs between stochastic LLM generation and deterministic graph execution](../images/ontographia-part1-cover.jpg)
+![The Graph AI Dilemma: Navigating the trade-offs between stochastic LLM generation and deterministic graph execution](../../images/ontographia-part1-cover.jpg)
 
 > **Series Overview: The Ontographia Trilogy**
 > 
