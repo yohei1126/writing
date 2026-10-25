@@ -8,7 +8,7 @@
 >
 > This three-part series looks at the common middle ground (AI picks a pre-approved template) and why it still stalls in production. It then proposes a different split: the AI only describes *what* the user wants to know, and a fixed, ontology-checked pipeline turns that description into a safe query ([Ontographia](https://github.com/edgesentry/ontographia)).
 >
-> * **Part 1: The Graph AI Dilemma** *(This article)*. Why templates become the bottleneck, what recent research helps, and the Intent-first idea
+> * **Part 1: [The Graph AI Dilemma](https://www.linkedin.com/pulse/graph-ai-dilemma-let-llms-write-cypher-suffer-template-yohei-onishi-hj8kc/)** *(This article)*. Why templates become the bottleneck, what recent research helps, and the Intent-first idea
 > * **Part 2: [The LLM Never Writes Cypher](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/)**. How the split works in practice; step-by-step walkthroughs stay in the docs and repo
 > * **Part 3: Wrong but Real**. Measurements on large ontologies and public datasets, plus what is still open
 >
