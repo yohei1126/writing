@@ -6,6 +6,7 @@ Writes JSON to stdout: title, published, tags, canonical_url, series, body_markd
 
 body_markdown is the LinkedIn file text with leading cover image line(s) removed
 (Dev.to shows its own cover_image, and the relative image path breaks there).
+Remaining relative `../../images/...` links become raw GitHub URLs on main.
 Everything else is unchanged. cover_note is not an API field.
 This script does not call the Dev.to API. It refuses published: true.
 """
@@ -21,6 +22,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = ("title", "published", "tags", "canonical_url", "series", "source")
 PAYLOAD_KEYS = ("title", "published", "tags", "canonical_url", "series")
 IMAGE_LINE = re.compile(r"^!\[[^\]]*\]\([^)]*\)\s*$")
+RELATIVE_IMAGE = re.compile(r"(!\[[^\]]*\]\()(?:\.\./)+images/([^)\s]+)\)")
+RAW_IMAGES = "https://raw.githubusercontent.com/yohei1126/writing/main/images/"
 
 
 def main(argv: list[str]) -> int:
@@ -51,7 +54,8 @@ def main(argv: list[str]) -> int:
         print(f"source article not found: {source}", file=sys.stderr)
         return 1
     payload = {key: meta[key] for key in PAYLOAD_KEYS}
-    payload["body_markdown"] = strip_leading_cover(source.read_text(encoding="utf-8"))
+    body = strip_leading_cover(source.read_text(encoding="utf-8"))
+    payload["body_markdown"] = absolutize_images(body)
     json.dump(payload, sys.stdout, ensure_ascii=False, indent=2)
     sys.stdout.write("\n")
     return 0
@@ -80,6 +84,14 @@ def strip_leading_cover(text: str) -> str:
         out.append(lines[i])
         i += 1
     return "".join(out + lines[i:])
+
+
+def absolutize_images(text: str) -> str:
+    """Point relative `../images/...` image links at raw GitHub URLs on main.
+
+    Dev.to cannot resolve repo-relative paths, so in-body figures would break.
+    """
+    return RELATIVE_IMAGE.sub(lambda m: f"{m.group(1)}{RAW_IMAGES}{m.group(2)})", text)
 
 
 def parse_simple_yaml(text: str) -> dict:
