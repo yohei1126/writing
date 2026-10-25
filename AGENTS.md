@@ -15,8 +15,9 @@ Markdown sources for **non-Zenn** outreach writing by Yohei (LinkedIn articles/p
 | :--- | :---: | :--- |
 | `linkedin/` | yes | LinkedIn article and feed-post Markdown (flat or series subfolders) |
 | `linkedin/ontographia/` | yes | Ontographia English series (Parts 1–3 article/post pairs) |
-| `devto/` | yes | Dev.to English drafts with DEV YAML front matter |
-| `devto/ontographia/` | yes | Ontographia Dev.to drafts (`published: false` until a later register step) |
+| `devto/` | yes | Dev.to registration metadata only (not article bodies) |
+| `devto/ontographia/` | yes | Ontographia Dev.to meta (`published: false`) |
+| `scripts/devto_payload.py` | yes | Build a Dev.to payload JSON from LinkedIn markdown + `devto/` meta. Does not call the API. |
 | `README.md` | yes | Human-oriented overview |
 | `.markdownlint.json` | yes | markdownlint rules (long lines allowed) |
 
@@ -71,13 +72,17 @@ For Ontographia LinkedIn **article** bodies (Parts 1–3):
 - When implementers need depth, point to a concrete public docs URL or repository path (for example the [architecture guide](https://edgesentry.github.io/ontographia/architecture/), [Evaluation guide](https://edgesentry.github.io/ontographia/evaluation/), or `examples/llm/eval/`).
 - Keep existing verified numbers and claims; do not invent metrics or round claims up.
 
-## Dev.to file conventions
+## Dev.to metadata
+
+The LinkedIn article Markdown is the canonical body. `devto/` holds registration metadata only. Do not copy the article prose into `devto/`.
 
 ```text
-devto/<series>/YYYY-MM-DD-<series>-partN-<topic-slug>.md
+devto/<series>/YYYY-MM-DD-<series>-partN-<topic-slug>.yml
 ```
 
-English article drafts with DEV front matter (`title`, `published`, `tags`, `canonical_url`, `series`). Keep `published: false` in git. Do not call the Dev.to API from this repo; after merge, a separate step registers the draft.
+Fields: `title`, `published` (keep `false`), `tags`, `canonical_url`, `series`, `source` (repo path of the LinkedIn article). Optional `cover_note` (not sent to the API).
+
+`scripts/devto_payload.py` reads one meta file and prints JSON (`title`, `published`, `tags`, `canonical_url`, `series`, `body_markdown`). `body_markdown` is the LinkedIn file unchanged. The script does not call the Dev.to API. After merge, a separate step registers the draft with `published: false`.
 
 ## Writing skills (required before review)
 
@@ -115,4 +120,5 @@ Config is `.markdownlint.json` (based on yohei1126/zenn; line length and LinkedI
 - Wording refined with the skills above before review (when prose changed).
 - `npm run lint` / CI markdownlint passes.
 - LinkedIn drafts remain English Markdown suitable for manual paste/publish.
+- `devto/` stays metadata. Article prose is not duplicated there.
 - No Zenn-only tooling or season-plan workflow is assumed here.

@@ -8,10 +8,17 @@ Markdown sources for Yohei’s non-Zenn outreach writing (LinkedIn now; later X 
 | :--- | :--- |
 | `linkedin/` | LinkedIn long-form articles and feed post drafts (English) |
 | `linkedin/ontographia/` | Ontographia series (Parts 1–3 article/post pairs) |
-| `devto/` | Dev.to English drafts with DEV front matter (`published: false`) |
-| `devto/ontographia/` | Ontographia Dev.to drafts |
+| `devto/` | Dev.to registration metadata only (`published: false`). Article body stays in `linkedin/`. |
+| `devto/ontographia/` | Ontographia Dev.to meta (Part 1) |
+| `scripts/devto_payload.py` | Prints a Dev.to payload JSON from a meta file and the LinkedIn article. Does not publish. |
 
-Zenn articles stay in [yohei1126/zenn](https://github.com/yohei1126/zenn). This repo does not publish automatically — the author posts manually to each platform.
+Zenn articles stay in [yohei1126/zenn](https://github.com/yohei1126/zenn). This repo does not publish automatically — the author posts manually to each platform. Dev.to registration is a separate step after merge; `devto/` does not call the API.
+
+Build a payload (still no API call):
+
+```bash
+python3 scripts/devto_payload.py devto/ontographia/2026-09-08-ontographia-part1-template-cost.yml
+```
 
 ## LinkedIn naming
 

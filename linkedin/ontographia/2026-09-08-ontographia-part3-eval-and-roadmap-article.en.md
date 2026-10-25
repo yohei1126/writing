@@ -5,7 +5,7 @@
 > Teams that query a graph database such as Neo4j in natural language usually choose between letting an AI write the query and locking the system to handwritten templates. This series examines the common compromise (agent skills plus template selection) and proposes another split: the AI extracts a structured Intent, and an ontology-checked, deterministic pipeline compiles the Cypher ([Ontographia](https://github.com/edgesentry/ontographia)).
 >
 > * **Part 1: [The Graph AI Dilemma: Let LLMs Write Cypher or Suffer Template Maintenance Hell?](https://www.linkedin.com/pulse/graph-ai-dilemma-let-llms-write-cypher-suffer-template-yohei-onishi-hj8kc/)**. Production bottlenecks, research review, Intent-first hypothesis
-> * **Part 2: [The LLM Never Writes Cypher: Intent-First Design and Implementation](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/)**. How the split works in practice
+> * **Part 2: [The LLM Never Writes Cypher: Intent-First Design and Implementation]([LINK TO PART 2])**. How the split works in practice
 > * **Part 3: Evaluation and Roadmap** *(This article)*. What the measurements support, what they do not, and what comes next
 >
 > * Documentation: [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
@@ -21,7 +21,7 @@ Harness scripts, baselines, and full tables live under `examples/llm/eval/` in t
 
 ## What Part 2 left to measure
 
-[Part 2](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/) moved three ideas from Text-to-Cypher research to the Intent layer: ontology subsetting, Intent repair from execution feedback, and staged retries that spend more only on hard questions. Each one is a hypothesis about cost or accuracy, so this part tests them as H1 to H3, plus a fourth question: does the Canonical Ontology Model work on schemas I did not write?
+[Part 2]([LINK TO PART 2]) moved three ideas from Text-to-Cypher research to the Intent layer: ontology subsetting, Intent repair from execution feedback, and staged retries that spend more only on hard questions. Each one is a hypothesis about cost or accuracy, so this part tests them as H1 to H3, plus a fourth question: does the Canonical Ontology Model work on schemas I did not write?
 
 I fixed the pass criteria in code before running anything.
 
