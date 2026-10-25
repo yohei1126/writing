@@ -17,7 +17,9 @@ Part 1 ended with a question. Can a natural-language interface follow what users
 
 Ontographia's answer is to give the AI exactly one job. It reads the question and writes a structured Intent: where to start, which relationships to follow, how to filter, and what to return. A fixed core checks every name in that Intent against the ontology and compiles it into Cypher with values bound as parameters. The AI never writes Cypher, and nothing it writes reaches the database as query text.
 
-The rest of this piece stays at design level: how a question becomes a query, why the template catalog can go away, why the model and database driver stay outside the core, how three research ideas move from "fix the query string" to "fix the Intent," and what a small real run on v0.1.6 showed. Step-by-step implementation belongs in the public docs and repo, linked below.
+The published packages already follow that split. [v0.1.5](https://github.com/edgesentry/ontographia/releases/tag/v0.1.5) started rejecting Intents with unknown fields. [v0.1.6](https://github.com/edgesentry/ontographia/releases/tag/v0.1.6) packaged the experimental Intent layer as an installable extra and added an MCP server that builds Cypher only after validation. Later sections walk through that design and a small end-to-end run of v0.1.6 against a real Neo4j setup.
+
+The rest of this piece stays at design level: how a question becomes a query, why the template catalog can go away, why the model and database driver stay outside the core, and how three research ideas move from "fix the query string" to "fix the Intent." Step-by-step implementation belongs in the public docs and repo, linked below.
 
 ## Where Part 1 left off
 
@@ -47,13 +49,13 @@ In the hybrid approach, someone writes a Cypher string in advance for each patte
 
 In Ontographia a query is a combination of a small set of Intent fields (start, traverse, filter, return, plus optional ordering, paging, and an optional-match flag). Any question that stays inside the ontology's vocabulary can be expressed with those fields, so a new pattern does not need a new template.
 
-The field set is closed. Since v0.1.5, an unknown key is a validation error that names the offending field. Before that, unknown keys were ignored, so a model that wrote `filters` instead of `filter` could build a query with the filter silently dropped. Unknown dialect names are rejected the same way instead of falling back quietly.
+The field set is closed. Since [v0.1.5](https://github.com/edgesentry/ontographia/releases/tag/v0.1.5), an unknown key is a validation error that names the offending field. Before that, unknown keys were ignored, so a model that wrote `filters` instead of `filter` could build a query with the filter silently dropped. Unknown dialect names are rejected the same way instead of falling back quietly.
 
 ## Why the core has no model and no database driver
 
 The core is a compiler. It has no networking, no model API, and no Neo4j driver. Many AI toolkits put those inside the engine; Ontographia keeps them out on purpose so query assembly can be tested without tokens, without mocked model replies, and without a live database. The rule that the model never edits Cypher is enforced by that boundary, not only by convention. See the [architecture guide](https://edgesentry.github.io/ontographia/architecture/).
 
-Leaving prompting and execution to the application has a cost: every team would otherwise invent its own wiring. The project started with helpers as examples in the repository. In v0.1.6 they became an installable, experimental Python extra for Intent extraction and related loops. Cypher still comes only from the core, after validation.
+Leaving prompting and execution to the application has a cost: every team would otherwise invent its own wiring. The project started with helpers as examples in the repository. In [v0.1.6](https://github.com/edgesentry/ontographia/releases/tag/v0.1.6) they became an installable, experimental Python extra for Intent extraction and related loops. Cypher still comes only from the core, after validation.
 
 ## Three research ideas, moved from Cypher to Intent
 
@@ -99,6 +101,6 @@ To try it: install the core with `pip install ontographia`, and add the experime
 
 *Open source project:* [github.com/edgesentry/ontographia](https://github.com/edgesentry/ontographia)
 *Documentation:* [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
-*Release notes:* [v0.1.6](https://github.com/edgesentry/ontographia/releases/tag/v0.1.6)
+*Release notes:* [v0.1.5](https://github.com/edgesentry/ontographia/releases/tag/v0.1.5), [v0.1.6](https://github.com/edgesentry/ontographia/releases/tag/v0.1.6)
 *Author:* Yohei Onishi
 *Tags:* `#Neo4j #Cypher #KnowledgeGraph #GraphRAG #AIAgents #EnterpriseAI #MCP`
