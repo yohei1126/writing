@@ -7,7 +7,7 @@ It ends with the experimental MCP server from v0.1.6. In a real end-to-end run, 
 
 Part 3, with the evaluation numbers, comes next.
 
-Article: [LINK TO PART 2]
+Article: https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/
 Repo: https://github.com/edgesentry/ontographia
 
 #Neo4j #KnowledgeGraph #Cypher #LLM #Ontology #OpenSource #MCP

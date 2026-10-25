@@ -9,7 +9,7 @@
 > This three-part series looks at the common middle ground (AI picks a pre-approved template) and why it still stalls in production. It then proposes a different split: the AI only describes *what* the user wants to know, and a fixed, ontology-checked pipeline turns that description into a safe query ([Ontographia](https://github.com/edgesentry/ontographia)).
 >
 > * **Part 1: The Graph AI Dilemma** *(This article)*. Why templates become the bottleneck, what recent research helps, and the Intent-first idea
-> * **Part 2: The LLM Never Writes Cypher**. How the split works in practice; step-by-step walkthroughs stay in the docs and repo
+> * **Part 2: [The LLM Never Writes Cypher](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/)**. How the split works in practice; step-by-step walkthroughs stay in the docs and repo
 > * **Part 3: Wrong but Real**. Measurements on large ontologies and public datasets, plus what is still open
 >
 > * Documentation: [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
@@ -104,7 +104,7 @@ Under this split, new questions that stay inside the ontology's vocabulary do no
 
 ## What Parts 2 and 3 cover
 
-* **Part 2**. How the layers are split, why the model and database driver stay outside the core, how the three research ideas map onto Intent handling, and what a small real end-to-end run showed. Implementation detail lives in the docs and repo, not in the article body.
+* **[Part 2](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/)**. How the layers are split, why the model and database driver stay outside the core, how the three research ideas map onto Intent handling, and what a small real end-to-end run showed. Implementation detail lives in the docs and repo, not in the article body.
 * **Part 3**. Stress tests on ontologies with hundreds to thousands of properties (including the silent false-positive case), public Neo4j benchmark schemas, measured token and accuracy effects of subsetting, and an honest list of what the numbers do not prove.
 
 ## Takeaways
@@ -114,7 +114,7 @@ Under this split, new questions that stay inside the ontology's vocabulary do no
 * Schema filtering and iterative repair help, but while the model still writes query text, silent wrong-but-valid results remain.
 * Intent-first keeps language flexibility in a structured description and keeps query assembly deterministic and ontology-checked.
 
-If you want the mechanism next, continue to Part 2. If you want the measurements, skip to Part 3. To try the open-source project, start at the [documentation](https://edgesentry.github.io/ontographia/) or the [repository](https://github.com/edgesentry/ontographia).
+If you want the mechanism next, continue to [Part 2](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/). If you want the measurements, skip to Part 3. To try the open-source project, start at the [documentation](https://edgesentry.github.io/ontographia/) or the [repository](https://github.com/edgesentry/ontographia).
 
 ---
 
