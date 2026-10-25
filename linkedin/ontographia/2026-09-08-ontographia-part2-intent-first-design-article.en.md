@@ -1,5 +1,7 @@
 # The LLM Never Writes Cypher: Intent-First Design and Implementation (Ontographia Part 2)
 
+![Cover: natural-language question becomes Intent JSON, then validated Cypher for Neo4j](../../images/ontographia-part2-linkedin-cover.jpg)
+
 > **Series overview: Ontographia**
 >
 > Teams that query a graph database such as Neo4j in natural language usually choose between letting an AI write the query and locking the system to handwritten templates. This series examines the common compromise (agent skills plus template selection) and proposes another split: the AI extracts a structured Intent, and an ontology-checked, deterministic pipeline compiles the Cypher ([Ontographia](https://github.com/edgesentry/ontographia)).
