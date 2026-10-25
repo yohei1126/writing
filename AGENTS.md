@@ -84,6 +84,12 @@ Fields: `title`, `published` (keep `false`), `tags`, `canonical_url`, `series`, 
 
 `scripts/devto_payload.py` reads one meta file and prints JSON (`title`, `published`, `tags`, `canonical_url`, `series`, `body_markdown`). `body_markdown` is the LinkedIn file unchanged. The script does not call the Dev.to API. After merge, a separate step registers the draft with `published: false`.
 
+## Link routing
+
+- Series TOC Part links in article Markdown use the LinkedIn Pulse URL for each published part. Leave unpublished parts as placeholders (no URL).
+- Dev.to registration meta sets `canonical_url` to the matching LinkedIn Pulse URL. With the meta-only `devto/` layout, the LinkedIn Markdown file remains the canonical body.
+- Deep implementation links point at public docs ([edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)) or GitHub ([edgesentry/ontographia](https://github.com/edgesentry/ontographia)), not duplicated long code in the article.
+
 ## Writing skills (required before review)
 
 Refine wording with the appropriate skill **before** asking for review. Do not skip this for new or substantially edited drafts.
