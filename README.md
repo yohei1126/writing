@@ -14,6 +14,8 @@ Markdown sources for Yohei’s non-Zenn outreach writing (LinkedIn now; later X 
 
 Zenn articles stay in [yohei1126/zenn](https://github.com/yohei1126/zenn). This repo does not publish automatically — the author posts manually to each platform. Dev.to registration is a separate step after merge; `devto/` does not call the API.
 
+Published series TOC Part links and Dev.to `canonical_url` use the matching LinkedIn Pulse URL (unpublished TOC parts stay placeholders).
+
 Build a payload (still no API call):
 
 ```bash
