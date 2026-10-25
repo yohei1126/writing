@@ -1,7 +1,7 @@
 # Dev.to registration metadata for Ontographia Part 1.
 # The article body is the LinkedIn markdown at `source`, not a copy in this file.
-# ../../images/ontographia-part1-cover.jpg is referenced by that article and is not on main.
-# Do not send cover_image until that file exists.
+# Cover file: images/ontographia-part1-cover.jpg (article path: ../../images/ontographia-part1-cover.jpg).
+# cover_image is left unset. Do not call the Dev.to API from this repo.
 title: "The Graph AI Dilemma: Let LLMs Write Cypher or Suffer Template Maintenance Hell? (Ontographia Part 1)"
 published: false
 tags:
@@ -13,4 +13,4 @@ tags:
 canonical_url: https://www.linkedin.com/pulse/graph-ai-dilemma-let-llms-write-cypher-suffer-template-yohei-onishi-hj8kc/
 series: Ontographia
 source: linkedin/ontographia/2026-09-08-ontographia-part1-template-cost-article.en.md
-cover_note: "LinkedIn article references ../../images/ontographia-part1-cover.jpg, which is not on main. Omit cover_image until that file is added."
+cover_note: "Cover file is images/ontographia-part1-cover.jpg. cover_image is unset."
