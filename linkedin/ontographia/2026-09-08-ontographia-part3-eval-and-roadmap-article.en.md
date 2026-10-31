@@ -173,6 +173,7 @@ This quantitatively confirms the primary failure mode of graph AI at scale: stat
 Simultaneously, prompt token overhead on the full schema grew tenfold, jumping from 1,359 tokens on the small schema to 13,710 tokens on the large schema.
 
 To reproduce this baseline experiment locally:
+
 ```bash
 uv run python examples/llm/eval/run_track_a.py --record
 ```
@@ -230,6 +231,7 @@ The simulation arm met all pre-registered criteria for Hypothesis H1:
 However, a deterministic simulation relies on a key simplifying assumption: that the model only errs when distractors are visible in its prompt. To observe how real models behave when dealing with ambiguous phrasing and vocabulary pruning, we turn to commercial LLM evaluation.
 
 To reproduce the simulation locally:
+
 ```bash
 uv run python examples/llm/eval/run_track_a_h1.py --record
 ```
@@ -305,6 +307,7 @@ Third, standalone subsetting exhibits high variance and must not be used in prod
 Fourth, the fallback mechanism is essential for operational stability. Under `subset_fallback`, the engine automatically escalates to the full schema whenever the subset fails extraction or validation. This fallback triggered on 17.0% ± 2.7% of queries, requiring an average of 1.08 LLM calls per question. By using the full schema as a safety net, `subset_fallback` recaptured missing vocabulary and maintained a high, stable success rate (0.878 ± 0.065). In production environments, subsetting without a fallback path is an anti-pattern.
 
 To reproduce the live evaluation harness:
+
 ```bash
 uv run python examples/llm/eval/run_track_a_h1_live.py --profiles mid,large --record
 ```
@@ -369,6 +372,7 @@ This experiment proves that Ontographia's ingestion and compilation pipeline exe
 A key takeaway from Track B was the necessity of decoupling domain heuristics from the core engine. In early prototypes, terminology repair rules were hardcoded for manufacturing concepts. In Track B, we moved these rules into declarative YAML configuration mappings. We verified that switching from manufacturing mappings to cinema domain mappings allowed the same compiler engine to handle movies without modification.
 
 To run the Track B execution benchmark:
+
 ```bash
 uv run --with datasets --with neo4j python examples/llm/eval/run_track_b_exec.py --record
 ```
@@ -425,6 +429,7 @@ This simulation confirms the integrity of the state machine and repair control l
 In live production environments, the ultimate recovery rate depends on whether the LLM can infer the correct filter value from the execution error. The core value of Ontographia's approach is that even when an LLM fails to find the right filter, it cannot violate query safety or database governance while trying.
 
 Teams can enable this self-repair loop in production via the CLI:
+
 ```bash
 uv run python examples/run_llm_e2e.py \
   --question "Which plant hosts production Line-1?" \
@@ -434,6 +439,7 @@ uv run python examples/run_llm_e2e.py \
 ```
 
 To reproduce the simulation locally:
+
 ```bash
 uv run python examples/llm/eval/run_track_a_h2.py --record
 ```
@@ -504,6 +510,7 @@ The simulation supported Hypothesis H3 across all criteria:
 This adaptive mechanism is already built into Ontographia as the default production mode (`--schema-policy auto`). Because this policy mirrors the `subset_fallback` behavior verified in our live commercial LLM evaluations, teams do not need a separate query classifier to benefit from adaptive spend.
 
 To test the adaptive policy:
+
 ```bash
 uv run python examples/run_llm_e2e.py \
   --question "Which plant hosts production Line-1?" \
@@ -512,6 +519,7 @@ uv run python examples/run_llm_e2e.py \
 ```
 
 To reproduce the simulation locally:
+
 ```bash
 uv run python examples/llm/eval/run_track_a_h3.py --record
 ```
@@ -571,6 +579,7 @@ The central takeaway is clear: enterprise graph AI does not require choosing bet
 Ontographia is open source. All code, ontology specifications, evaluation harnesses, and raw benchmark data are publicly accessible.
 
 You can install the experimental Intent layer directly from PyPI:
+
 ```bash
 pip install "ontographia[llm]"
 ```
