@@ -9,6 +9,7 @@
 > * **Part 1: [The Graph AI Dilemma: Let LLMs Write Cypher or Suffer Template Maintenance Hell?](https://www.linkedin.com/pulse/graph-ai-dilemma-let-llms-write-cypher-suffer-template-yohei-onishi-hj8kc/)**. Production bottlenecks, research review, Intent-first hypothesis
 > * **Part 2: [The LLM Never Writes Cypher: Intent-First Design and Implementation](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/)**. How the split works in practice
 > * **Part 3: Evaluation and Roadmap** *(This article)*. What the measurements support, what they do not, and what comes next
+> * Japanese edition: [Zenn article](https://zenn.dev/yohei/articles/2026-09-08-ontographia-eval-and-roadmap)
 >
 > * Documentation: [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
 > * Repository: [github.com/edgesentry/ontographia](https://github.com/edgesentry/ontographia)
@@ -17,7 +18,7 @@
 
 Ontology validation stops names that do not exist. It cannot stop a real name that is the wrong one. Once an ontology grows to a few hundred properties, those wrong-but-real names fill the prompt: in my stress test, all 40 deliberately wrong Intents compiled cleanly at 200 properties and again at 2,000.
 
-What helped most was controlling what the model sees. Sending only the part of the ontology a question touches, with a fallback to the full schema, cut prompt tokens by about 91% on the 2,000-property ontology and raised correct property choices with a live model. That held with two Gemini Flash versions and on the published package. The newer model was not better on that setting, and exact match on a public-benchmark spot check was about 3%.
+What helped most was controlling what the model sees. Sending only the part of the ontology a question touches, with a fallback to the full schema, cut prompt tokens by about 91% on the 2,000-property ontology (13,765 to 1,301 p95) and raised correct property choices by an average of 19.5 points in a live evaluation with Gemini 3.8 Flash. But subsetting alone has high variance and requires the fallback, and exact match on a public-benchmark spot check was about 3%.
 
 ## Three hypotheses, with pass criteria fixed in advance
 
@@ -33,7 +34,7 @@ A fourth question: does the ontology model work on schemas I did not write?
 
 Track A is a synthetic manufacturing domain with 40 questions, each with a gold Intent, at 16, 200, and 2,000 properties. The larger versions are padded with near-duplicates such as `plant_id` next to `plant_code` and `factory_id`, the overlap that builds up in enterprise graphs after years of system integration.
 
-Most of Track A runs on a mechanical arm ("arm" as in one condition of a clinical trial): fixed simulation rules replace the live model, so a failure points at the pipeline rather than at sampling noise. It tests whether the control loops work, not how capable a model is. For H1 I also ran a live arm with Gemini Flash at temperature 0.
+Most of Track A runs as a deterministic simulation arm ("arm" as in one experimental condition of a trial): fixed simulation rules replace the live model, so a failure points at the pipeline rather than at sampling noise. It tests whether the control loops work, not how capable a model is. For H1, I also ran live LLM evaluations with Gemini 3.8 Flash (`ontographia-gemini-3.8` via LiteLLM, PyPI `ontographia[llm]==0.1.6`, temperature 0).
 
 Track B uses 15 public database schemas from Neo4j's [text2cypher-2025v1](https://huggingface.co/datasets/neo4j/text2cypher-2025v1) dataset, from movies to healthcare.
 
@@ -41,27 +42,25 @@ Track B uses 15 public database schemas from Neo4j's [text2cypher-2025v1](https:
 
 The baseline sends the full schema and feeds the pipeline Intents that pick a distractor. On the 16-property ontology there are no distractors, so validation rejected all 40 wrong names as unknown. On the 200- and 2,000-property ontologies, the same 40 wrong Intents passed validation and compiled, 40 of 40 both times. The validator can check that a name exists, not that it is the name the user meant. That is the silent false positive from Part 1, reproduced on demand. The full prompt also grows from 1,359 tokens to 2,460 to 13,710.
 
-## Showing the model less: the result that held across models
+## Showing the model less: live evaluation at 2,000 properties
 
 Subsetting matches words in the question against ontology names, keeps the matched classes and the relationships that connect them, and sends only that. The recommended setting, `subset_fallback`, goes back to the full schema only if extraction or validation fails on the subset.
 
-![Full schema: 13,710 tokens, Property Hit 0.82, 33 of 40 compiled. subset_fallback: 1,247 tokens, Property Hit 0.95, 40 of 40 compiled.](../../images/ontographia-part3-fig-a-subset-vs-full.jpg)
+In deterministic simulation, Property Hit went from 0.50 to 1.00 with all 40 compiled, and p95 tokens dropped from 13,710 to 1,247 (~91%). But the simulation only errs on distractors it can see, so that mostly confirms the subset hides them.
 
-*Figure A. The same 2,000-property ontology sent two ways. Gemini 3.7 Flash, one live run, p95 prompt tokens.*
+Live LLM evaluation provides the real test. Using Gemini 3.8 Flash on the published package (`ontographia[llm]==0.1.6`, temperature 0), I evaluated the 2,000-property ontology across 5 repeated runs (large n=5, mean ± sample sd). Every run supported the hypothesis.
 
-On the mechanical arm, Property Hit went from 0.50 to 1.00 with all 40 compiled, but the arm only errs on distractors it can see, so that mostly confirms the subset hides them. The live run is the stronger evidence. With Gemini 3.7 Flash, the full schema scored 0.82 Property Hit and compiled 33 of 40; `subset_fallback` scored 0.95 and compiled 40 of 40, a 12.5-point gain, so H1 passed live too. The subset alone did worse than the full schema (0.78, 32 of 40) because some questions needed vocabulary the exact-match subset missed. In production, subsetting needs the fallback.
+On the full schema, Property Hit was 0.683 ± 0.069, compile success was 28.4 ± 3.0 of 40, and p95 prompt tokens reached 13,765.
 
-After [v0.1.6](https://github.com/edgesentry/ontographia/releases/tag/v0.1.6) put the Intent layer on PyPI, I re-ran the live evaluation on the published package with the same settings and two models, Gemini 3.7 Flash and 3.8 Flash, one run each. With both, no output contained a name the model had not been shown, `subset_fallback` beat the full schema on Property Hit (by 30 points with 3.7, 16.25 with 3.8), and p95 tokens fell by about 90.5%.
+With `subset_fallback`, Property Hit reached 0.878 ± 0.065, compile success rose to 36.4 ± 2.3 of 40, and p95 prompt tokens dropped to 1,301. That is an average gain of +19.5 points in Property Hit and a 90.5% token reduction (about 91%), while falling back to the full schema only 17.0% ± 2.7% of the time. Neither configuration produced invented names or near-duplicate confusions that were not in the schema.
 
-![Gemini 3.7 Flash on subset_fallback: Property Hit 0.95, 40 of 40 compiled. Gemini 3.8 Flash: Property Hit 0.8875, 37 of 40 compiled. Single run per model.](../../images/ontographia-part3-fig-b-model-comparison.jpg)
+Subsetting alone without fallback scored 0.720 ± 0.086 Property Hit and 29.8 ± 3.7 compiled. Because an exact-match subset occasionally misses vocabulary, subsetting alone exhibits high variance (sd = 0.086). In production, the fallback mechanism is essential.
 
-*Figure B. The newer model was not better on the recommended setting. Published package, 2,000-property ontology, one run per model.*
+A smaller 200-property evaluation (mid n=3) showed the same pattern: full scored 0.683 ± 0.031 (p95 tokens 2,515), subset scored 0.717 ± 0.051, and `subset_fallback` scored 0.858 ± 0.038 (p95 tokens 1,301), with all verdicts supporting H1.
 
-The newer model improved the full schema (0.65 to 0.725 Property Hit) but scored lower on `subset_fallback`: 0.95 to 0.8875, and 40 of 40 to 37 of 40 compiled. Track B compile went from 39 of 60 to 36 of 60. If you swap models, re-run your evaluation on the configuration you actually use.
+One caveat remains: neither condition had a "no ontology" baseline, so the comparison shows how the way you send the same ontology changes accuracy and cost, not how much an ontology helps in the first place.
 
-Two caveats. These are single runs, and the 3.7 full-schema score itself differed between the first live run and the re-run (0.82 and 0.65), so treat each gap as rough. And neither run had a "no ontology" condition, so the comparison shows how the way you send the same ontology changes accuracy and cost, not how much an ontology helps in the first place.
-
-## Repair and staged retries work, on the mechanical arm
+## Repair and staged retries work in deterministic simulation
 
 An Intent can be valid, compile, and still return nothing, for example because a filter uses a plant code that does not exist. Instead of asking the model to fix the failed Cypher, Ontographia hands back the execution result and asks for a corrected Intent, which is validated and compiled again. With the 40 gold Intents' filter values deliberately broken, final execution success was 0 without feedback and 1.00 with it, and every emitted query matched what the compiler builds.
 
@@ -79,7 +78,7 @@ That number is low, and it mixes Intent extraction errors, schema conversion gap
 
 ## What these results do not show
 
-Each live condition ran once. H2 and H3 have no dedicated live runs, and everything live is Gemini. The end-to-end sample from Part 2 is small: one of four attempts answered the question.
+While H1 now has repeated live runs (mid n=3, large n=5), H2 and H3 have no dedicated live runs, and all live evaluation is Gemini 3.8 Flash. The end-to-end sample from Part 2 is small: one of four attempts answered the question.
 
 The hallucination claim stays narrow. Names outside the ontology are stopped before anything reaches the database, but a real name chosen wrongly can still pass, and factual errors are out of scope. Subsetting lowers the chance of a wrong pick without eliminating it, and the exact-match subset still misses synonyms.
 

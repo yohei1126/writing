@@ -3,7 +3,7 @@ Part 3 of my Ontographia series is up. Ontographia is an open-source tool for qu
 
 Ontology validation stops names that do not exist, but not real names that are wrong. On 200- and 2,000-property ontologies, all 40 deliberately wrong Intents compiled cleanly.
 
-Sending the model only the part of the ontology a question touches, with a fallback to the full schema, cut prompt tokens by about 91% at 2,000 properties. With Gemini 3.7 Flash it raised correct property choices by 12.5 points, and all 40 questions compiled. A re-run on the published package held that pattern with 3.7 and 3.8 Flash, though 3.8 scored lower than 3.7 on that setting in a single run.
+Sending the model only the part of the ontology a question touches, with a fallback to the full schema, cut prompt tokens by about 91% at 2,000 properties (13,765 to 1,301 p95). In a live evaluation with Gemini 3.8 Flash (large n=5), it lifted correct property choices by +19.5 points on average over the full schema, with every run supporting the hypothesis.
 
 On 15 public Neo4j schemas the pipeline runs end to end, but exact match on answers was about 3%. The article explains why, and what comes next.
 
