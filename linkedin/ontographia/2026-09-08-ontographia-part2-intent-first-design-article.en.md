@@ -8,7 +8,7 @@
 >
 > * **Part 1: [The Graph AI Dilemma: Let LLMs Write Cypher or Suffer Template Maintenance Hell?](https://www.linkedin.com/pulse/graph-ai-dilemma-let-llms-write-cypher-suffer-template-yohei-onishi-hj8kc/)**. Production bottlenecks, research review, Intent-first hypothesis
 > * **Part 2: [The LLM Never Writes Cypher](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/)** *(This article)*. How the split works in practice
-> * **Part 3: Wrong but Real**. Stress tests, public datasets, and limits of the claims
+> * **Part 3: [Wrong but Real](https://www.linkedin.com/pulse/wrong-real-evaluating-intent-first-cypher-generation-2000-onishi-ovdsc/)**. Stress tests, public datasets, and limits of the claims
 >
 > * Documentation: [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
 > * Repository: [github.com/edgesentry/ontographia](https://github.com/edgesentry/ontographia)
@@ -67,7 +67,7 @@ Part 1 covered schema filtering, iterative refinement, and difficulty-adaptive s
 
 **Iterative refinement becomes Intent repair.** An Intent can pass validation, compile, and still return zero rows, or the driver can raise a type error. Text-to-Cypher work often hands the failed Cypher back to the model, which brings non-determinism back into the query string. Here the model gets the execution result and revises the Intent. The revised Intent goes through validation and compilation again, so every query that runs still comes from the compiler. The loop is opt-in, defaults to at most two rounds, and stops if a revised Intent fails validation.
 
-**Difficulty-adaptive spend becomes staged retries.** Everyday questions are often single-node lookups or shallow walks. Extraction starts with the subset and a single retry, and only then moves to the full schema with more retries. Execution failures on Neo4j do not trigger that escalation; the repair loop handles those. The aim is lower tokens and latency on easy questions. Whether it works is a measurement question; Part 3 has the numbers.
+**Difficulty-adaptive spend becomes staged retries.** Everyday questions are often single-node lookups or shallow walks. Extraction starts with the subset and a single retry, and only then moves to the full schema with more retries. Execution failures on Neo4j do not trigger that escalation; the repair loop handles those. The aim is lower tokens and latency on easy questions. Whether it works is a measurement question; [Part 3](https://www.linkedin.com/pulse/wrong-real-evaluating-intent-first-cypher-generation-2000-onishi-ovdsc/) has the numbers.
 
 ## What changes for agent skills
 
@@ -95,7 +95,7 @@ The project is pre-1.0, and releases can still break compatibility; v0.1.5 start
 
 ## Next: does it hold up at scale?
 
-Moving natural-language flexibility into the Intent and making Cypher assembly deterministic means a new kind of question no longer needs a new template. Whether that holds against ontologies with thousands of properties and public Text-to-Cypher benchmarks is a separate question. Part 3 reports a stress test at that scale and validation on public datasets, including where the approach falls short, plus a re-run on the published v0.1.6 package with two model versions.
+Moving natural-language flexibility into the Intent and making Cypher assembly deterministic means a new kind of question no longer needs a new template. Whether that holds against ontologies with thousands of properties and public Text-to-Cypher benchmarks is a separate question. [Part 3](https://www.linkedin.com/pulse/wrong-real-evaluating-intent-first-cypher-generation-2000-onishi-ovdsc/) reports a stress test at that scale and validation on public datasets, including where the approach falls short, plus a re-run on the published v0.1.6 package with two model versions.
 
 To try it: install the core with `pip install ontographia`, and add the experimental Intent layer or MCP extras if you need them (`ontographia[llm]`, `ontographia[mcp]`). The CLI is also on Homebrew (`brew tap edgesentry/tap && brew install ontographia`). The [Neo4j walkthrough](https://edgesentry.github.io/ontographia/end-to-end-neo4j/) runs the manufacturing sample end to end. If you try it on your own ontology, I would like to hear which questions failed validation and which passed but returned the wrong thing; issues are open on the [repository](https://github.com/edgesentry/ontographia).
 

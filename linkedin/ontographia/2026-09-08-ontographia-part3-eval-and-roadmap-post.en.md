@@ -7,7 +7,7 @@ Sending the model only the part of the ontology a question touches, with a fallb
 
 On 15 public Neo4j schemas the pipeline runs end to end, but exact match on answers was about 3%. The article explains why, and what comes next.
 
-Article: [LINK TO PART 3]
+Article: https://www.linkedin.com/pulse/wrong-real-evaluating-intent-first-cypher-generation-2000-onishi-ovdsc/
 Repo: https://github.com/edgesentry/ontographia
 
 #Neo4j #KnowledgeGraph #Cypher #LLM #Ontology #OpenSource #LLMEvaluation

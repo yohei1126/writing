@@ -10,7 +10,7 @@
 >
 > * **Part 1: [The Graph AI Dilemma](https://www.linkedin.com/pulse/graph-ai-dilemma-let-llms-write-cypher-suffer-template-yohei-onishi-hj8kc/)** *(This article)*. Why templates become the bottleneck, what recent research helps, and the Intent-first idea
 > * **Part 2: [The LLM Never Writes Cypher](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/)**. How the split works in practice; step-by-step walkthroughs stay in the docs and repo
-> * **Part 3: Wrong but Real**. Measurements on large ontologies and public datasets, plus what is still open
+> * **Part 3: [Wrong but Real](https://www.linkedin.com/pulse/wrong-real-evaluating-intent-first-cypher-generation-2000-onishi-ovdsc/)**. Measurements on large ontologies and public datasets, plus what is still open
 >
 > * Documentation: [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
 > * Repository: [github.com/edgesentry/ontographia](https://github.com/edgesentry/ontographia)
@@ -98,14 +98,14 @@ Four design principles follow.
 1. **The model only extracts Intent.** Its job is mapping language into a closed, structured form, not inventing query syntax.
 2. **The ontology is the gate.** Class, relationship, and property names must exist in the registered ontology before any query is built.
 3. **Query text is compiled, not sampled.** Filter values travel as parameters, which removes a common injection path.
-4. **Research ideas move to the Intent boundary.** Schema filtering becomes sending a smaller ontology slice with the prompt. Iterative refinement becomes revising the Intent after execution feedback, then validating and compiling again. Difficulty-adaptive spend becomes spending more retries only when early attempts fail. Part 2 and Part 3 take these up in turn.
+4. **Research ideas move to the Intent boundary.** Schema filtering becomes sending a smaller ontology slice with the prompt. Iterative refinement becomes revising the Intent after execution feedback, then validating and compiling again. Difficulty-adaptive spend becomes spending more retries only when early attempts fail. Part 2 and [Part 3](https://www.linkedin.com/pulse/wrong-real-evaluating-intent-first-cypher-generation-2000-onishi-ovdsc/) take these up in turn.
 
 Under this split, new questions that stay inside the ontology's vocabulary do not each need a new template. The database never sees model-written query text.
 
 ## What Parts 2 and 3 cover
 
 * **[Part 2](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/)**. How the layers are split, why the model and database driver stay outside the core, how the three research ideas map onto Intent handling, and what a small real end-to-end run showed. Implementation detail lives in the docs and repo, not in the article body.
-* **Part 3**. Stress tests on ontologies with hundreds to thousands of properties (including the silent false-positive case), public Neo4j benchmark schemas, measured token and accuracy effects of subsetting, and an honest list of what the numbers do not prove.
+* **[Part 3](https://www.linkedin.com/pulse/wrong-real-evaluating-intent-first-cypher-generation-2000-onishi-ovdsc/)**. Stress tests on ontologies with hundreds to thousands of properties (including the silent false-positive case), public Neo4j benchmark schemas, measured token and accuracy effects of subsetting, and an honest list of what the numbers do not prove.
 
 ## Takeaways
 
@@ -114,7 +114,7 @@ Under this split, new questions that stay inside the ontology's vocabulary do no
 * Schema filtering and iterative repair help, but while the model still writes query text, silent wrong-but-valid results remain.
 * Intent-first keeps language flexibility in a structured description and keeps query assembly deterministic and ontology-checked.
 
-If you want the mechanism next, continue to [Part 2](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/). If you want the measurements, skip to Part 3. To try the open-source project, start at the [documentation](https://edgesentry.github.io/ontographia/) or the [repository](https://github.com/edgesentry/ontographia).
+If you want the mechanism next, continue to [Part 2](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/). If you want the measurements, skip to [Part 3](https://www.linkedin.com/pulse/wrong-real-evaluating-intent-first-cypher-generation-2000-onishi-ovdsc/). To try the open-source project, start at the [documentation](https://edgesentry.github.io/ontographia/) or the [repository](https://github.com/edgesentry/ontographia).
 
 ---
 

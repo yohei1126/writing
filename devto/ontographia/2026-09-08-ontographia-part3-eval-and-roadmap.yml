@@ -1,0 +1,15 @@
+# Dev.to registration metadata for Ontographia Part 3.
+# The article body is the LinkedIn markdown at `source`, not a copy in this file.
+# Cover file: images/ontographia-part3-linkedin-cover.jpg (article path: ../../images/ontographia-part3-linkedin-cover.jpg).
+# cover_image is left unset. Do not call the Dev.to API from this repo.
+title: "Wrong but Real: Evaluating Intent-First Cypher Generation at 2,000 Properties (Ontographia Part 3)"
+published: false
+tags:
+  - neo4j
+  - knowledgegraph
+  - llm
+  - cypher
+canonical_url: https://www.linkedin.com/pulse/wrong-real-evaluating-intent-first-cypher-generation-2000-onishi-ovdsc/
+series: Ontographia
+source: linkedin/ontographia/2026-09-08-ontographia-part3-eval-and-roadmap-article.en.md
+cover_note: "Cover file is images/ontographia-part3-linkedin-cover.jpg. cover_image is unset."

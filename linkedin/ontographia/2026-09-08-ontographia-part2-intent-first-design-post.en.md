@@ -5,7 +5,7 @@ The article explains why the core has no LLM and no Neo4j driver, how Schema Fil
 
 It ends with the experimental MCP server from v0.1.6. In a real end-to-end run, a property name the ontology does not define was rejected before it reached the database. Only one of the four attempts succeeded end to end, though, and the article spells out what validation does not catch.
 
-Part 3, with the evaluation numbers, comes next.
+Part 3, with the evaluation numbers: https://www.linkedin.com/pulse/wrong-real-evaluating-intent-first-cypher-generation-2000-onishi-ovdsc/
 
 Article: https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/
 Repo: https://github.com/edgesentry/ontographia
