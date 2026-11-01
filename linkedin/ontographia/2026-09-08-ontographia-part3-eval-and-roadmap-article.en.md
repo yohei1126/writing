@@ -8,7 +8,7 @@
 >
 > * **Part 1: [The Graph AI Dilemma: Let LLMs Write Cypher or Suffer Template Maintenance Hell?](https://www.linkedin.com/pulse/graph-ai-dilemma-let-llms-write-cypher-suffer-template-yohei-onishi-hj8kc/)**. Production bottlenecks, research review, Intent-first hypothesis
 > * **Part 2: [The LLM Never Writes Cypher: Intent-First Design and Implementation](https://www.linkedin.com/pulse/llm-never-writes-cypher-intent-first-design-part-2-yohei-onishi-oyroc/)**. How the split works in practice
-> * **Part 3: Evaluation and Roadmap** *(This article)*. What the measurements support, what they do not, and what comes next
+> * **Part 3: [Evaluation and Roadmap](https://www.linkedin.com/pulse/wrong-real-evaluating-intent-first-cypher-generation-2000-onishi-ovdsc/)** *(This article)*. What the measurements support, what they do not, and what comes next
 > * Japanese edition: [Zenn article](https://zenn.dev/yohei/articles/2026-09-08-ontographia-eval-and-roadmap)
 >
 > * Documentation: [edgesentry.github.io/ontographia](https://edgesentry.github.io/ontographia/)
