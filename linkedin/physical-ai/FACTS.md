@@ -1,17 +1,21 @@
 # Locked facts for Physical AI LinkedIn EN (2026-11-03)
 
-- Course: Physical AI Applied 1, UTokyo Matsuo–Iwasawa Lab (already submitted; past tense).
-- Task: pick sponge with gripper, place on paper sheet.
-- Robot: SO-ARM101 Leader/Follower (LeRobot SO-101 docs https://huggingface.co/docs/lerobot/so101).
-- Stack: LeRobot, ACT, Mac MPS ~25k steps ~3.5–4h.
-- Cameras: Top = Logicool C920; Wrist = follower gripper camera. Continuity Camera can shift indices.
-- Preflight: PASS/FAIL on fixed serial ports + camera index. Voltage = visual checklist only (not in script).
-- Layout: layout39 final standardized layout. Arm base → sponge center 140 mm; arm base → paper center 70 mm (tape jig). Not “sponge is 140 mm”.
-- First real eval: 0/16. Later reference: L2 eval / verification set L2 → grasp-and-place 3/3 (small n; reference not benchmark).
-- TE = Temporal Ensembling (NOT task-engineering). Strong TE smoothing on real robot contributed to stalling / glue-like stop before target.
-- Servo heat: ~1.5° → 10–12° tracking error after ~20 episodes; cool ~every 10 episodes.
-- Checkpoint: best val_l1 (best_model) ranked ~6th in offline real-task scoring; pick by offline score not val_l1 alone.
-- Sim: MuJoCo; box-snap false positives; sim success 25 mm / 15° vs visual place on real robot.
+Source of truth: the published Zenn JA article (`_pr18_src/zenn-source.md`). Adapt it to LinkedIn EN. Do not add claims that are not in the Zenn article.
+
+- Course: Physical AI Applied 1, UTokyo Matsuo-Iwasawa Lab. Final assignment, already submitted. Use past tense.
+- Task: pick a sponge with the gripper, carry it to a target sheet of paper, place it still.
+- Robot: SO-ARM101, 6-DoF low-cost open-source arm, Leader/Follower pair ([LeRobot SO-101 docs](https://huggingface.co/docs/lerobot/so101)).
+- Stack: LeRobot, ACT (Action Chunking with Transformers), MuJoCo. Training on a MacBook Pro (M4) with PyTorch MPS, 25,000 steps, about 3.5 to 4 hours, no cloud GPU.
+- Cameras: Top = Logicool C920, fixed 16 cm from the right front edge of the desk. Wrist = follower gripper camera. Mac/iPhone Continuity Camera could take priority and shift indices.
+- Preflight script: checks fixed serial ports and camera indices, returns `RESULT: PASS` or `FAIL`. No port guessing. Voltage is a visual pre-work checklist item, not part of the script.
+- Power: 5V vs 12V confusion. The control board LED lit over USB bus power even without the 12V DC jack connected (false "powered" cue).
+- Layout: masking-tape frame on the work mat. Arm base to sponge center 140 mm, arm base to paper center 70 mm (not "the sponge is 140 mm"). Final layout series: layout39. Before this, the sponge and paper target dimensions were changed several times early on, which made coordinate systems inconsistent across datasets. A joint also touched the stand leg at the end of motion before the redesign.
+- Teleoperation: after about 20 consecutive episodes, `shoulder_lift` tracking lag grew from about 1.5° to 10-12° (servo heat suspected). Rest roughly every 10 episodes. Standardized start/end wait protocol.
+- Data QC: `nohup` recording sessions ended abnormally, so recording moved to the foreground in an interactive terminal. A relative path once appended new episodes to an old dataset, so scripts use absolute paths and stop if the directory is missing or metadata mismatches. QC tool plots joint angles and camera video to find outliers.
+- Training: macOS default Bash 3.2 syntax limits caused script trouble; scripts were adjusted.
+- Simulation (MuJoCo): box-snap produced false-positive successes; removed in favor of physical-contact judging. Sim success was 25 mm position / 15° angle, which differed from the real visual criterion (grasp and place without dropping). TE = Temporal Ensembling (NOT task engineering): weighted averaging of overlapping predicted action chunks. Too-strong TE smoothing, combined with real inertia and latency, made the arm stall short of the target; the setting was adjusted.
+- Checkpoint: the lowest `val_l1` checkpoint (`best_model`) made the real arm tremble and not reach the sponge. Candidates (between 10,000 and 25,000 steps) with a sim success rate were tested on the real robot. `best_model` ranked 6th among all candidates in scoring.
+- Real eval: first live eval 0/16 (0%). With the standardized layout and selected layout39 checkpoints, the L2 eval/verification set L2 gave 3/3 grasp-and-place success. Small n: reference value, not a benchmark.
 - Nine stages (exact names):
   1. Hardware wiring and power
   2. Desk layout standardization
@@ -22,12 +26,10 @@
   7. Simulation evaluation
   8. Checkpoint selection
   9. Real-robot autonomous evaluation
-- Links to keep: https://github.com/yohei1126/lerobot-so101-pick-and-place ; https://yohei1126.github.io/lerobot-so101-pick-and-place/ ; https://youtu.be/hYQggz5CilA ; https://huggingface.co/docs/lerobot/so101 ; https://zenn.dev/yohei/articles/2026-11-03-so101-sponge-paper-real-robot-walls
-- Forbidden: invent numbers/claims; tables/HTML/Mermaid; music credit; present progressive as if course ongoing.
-
-## Also true (from JA Zenn / prior draft; restore if missing)
-- Power: confused 5V vs 12V; servo board LED could light without 12V DC (false "powered" cue).
-- Cameras: top/wrist indices swapped across runs; Continuity Camera can appear and shift indices.
-- Layout history: physical layout changed three times before layout39; earlier changes invalidated prior data for ACT.
-- Process accidents: nohup training wrote output somewhere unexpected; relative paths resolved from wrong cwd → prefer absolute paths and cwd check before long runs.
-- Offline checkpoint scoring: best_model (best val_l1) ranked about sixth on real-task offline scoring.
+- Links to keep:
+  - Repo: https://github.com/yohei1126/lerobot-so101-pick-and-place
+  - Docs: https://yohei1126.github.io/lerobot-so101-pick-and-place/
+  - YouTube: https://youtu.be/hYQggz5CilA
+  - HF SO-101: https://huggingface.co/docs/lerobot/so101
+  - Zenn: https://zenn.dev/yohei/articles/2026-11-03-so101-sponge-paper-real-robot-walls
+- Forbidden: invented numbers or claims; tables, HTML, Mermaid; em dashes; music credit; present progressive as if the course were ongoing.
