@@ -21,6 +21,7 @@ Place these markdown images at the same narrative points as Zenn:
 2. RobOps flywheel (in "Full path to a working demo", where Zenn has the diagram): `![RobOps improvement flywheel: setup, data, training, real-robot evaluation](../../images/physical-ai-roboops-architecture.en.png)`
 3. Desk layout (in stage 2 机上配置 / Desk layout standardization, where Zenn has the first setup photo): `![Desk layout with masking-tape frame, sponge, and paper target](../../images/zenn-setup-a.jpeg)`
 4. Preflight / framing (in stage 3 事前点検, where Zenn has the second setup photo): `![Top and wrist camera framing of sponge, paper, and follower arm](../../images/zenn-setup-b.jpeg)`
+5. Simulation (in stage 7 Simulation evaluation): `![MuJoCo simulation rollout (top + wrist view): arm approaching the object](../../images/physical-ai-sim-mujoco-rollout.jpg)`
 
 Do not invent extra figures. Do not use remote Zenn CDN URLs; use the local `../../images/...` paths above.
 

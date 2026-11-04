@@ -111,6 +111,8 @@ As a result, I could run the whole training loop on the local Mac without depend
 
 ### 7. Simulation evaluation
 
+![MuJoCo simulation rollout (top + wrist view): arm approaching the object](../../images/physical-ai-sim-mujoco-rollout.jpg)
+
 In MuJoCo, a box-snap shortcut (a simple rule that treats the object as grasped once it comes within a certain distance, like a magnet) counted trajectories as successes even when the real robot would not have grasped the object. That produced false-positive successes. The simulation also judged success by position within 25 mm and angle within 15°, while my real test was visual: grasp the sponge and set it down in the target area without dropping it. The two criteria did not match.
 
 I removed box-snap from the simulation and judged success only by physical contact. I also revisited Temporal Ensembling (TE), which takes a weighted average of overlapping predicted action chunks to suppress sudden changes. With strong TE smoothing, plus the real arm's inertia and communication delay, the arm stalled short of the target. I adjusted the setting to suit the dynamics of the real arm.
