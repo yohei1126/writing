@@ -1,0 +1,15 @@
+# Dev.to registration metadata for Physical AI SO-101 Imitation Learning.
+# The article body is the LinkedIn markdown at `source`, not a copy in this file.
+# Cover file: images/physical-ai-linkedin-cover.jpg (article path: ../../images/physical-ai-linkedin-cover.jpg).
+# cover_image is left unset. Do not call the Dev.to API from this repo.
+title: "Beyond the Model: 9 Practical Engineering Hurdles in Real-Robot Imitation Learning (SO-101 + ACT)"
+published: false
+tags:
+  - robotics
+  - machinelearning
+  - ai
+  - python
+canonical_url: https://www.linkedin.com/pulse/beyond-model-9-practical-engineering-hurdles-imitation-yohei-onishi-lyzvc/
+series: Physical AI
+source: linkedin/physical-ai/2026-11-03-so101-sponge-paper-real-robot-walls-article.en.md
+cover_note: "Cover file is images/physical-ai-linkedin-cover.jpg. cover_image is unset."
