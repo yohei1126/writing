@@ -19,6 +19,6 @@ Setup: SO-ARM101, LeRobot, ACT, MuJoCo, trained on a MacBook Pro (MPS). This was
 Full write-up: [LINK TO ARTICLE]
 Code: https://github.com/yohei1126/lerobot-so101-pick-and-place
 Docs: https://yohei1126.github.io/lerobot-so101-pick-and-place/
-Video: https://youtu.be/hYQggz5CilA
+Video: https://youtu.be/wKztDcdr5Sg
 
 #Robotics #ImitationLearning #LeRobot #PhysicalAI

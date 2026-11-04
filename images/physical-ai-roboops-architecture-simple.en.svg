@@ -2,144 +2,162 @@
 <rect width="100%" height="100%" fill="#FFFFFF"/>
 
 <!-- Header -->
-<text x="80" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="34" font-weight="bold" fill="#0F172A">RobOps System Architecture: Contract, Multi-Stage Gates &amp; Continuous Improvement</text>
-<text x="80" y="110" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" fill="#475569">Single source of truth (SSOT) driving data collection, training, evaluation, live deployment, and rapid iteration</text>
+<text x="80" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="40" font-weight="800" fill="#0F172A">RobOps Architecture: Multi-Stage Gates &amp; Continuous Improvement</text>
+<text x="80" y="104" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="23" font-weight="500" fill="#475569">Single contract (SSOT) driving data collection, local training, evaluation, and physical rollout</text>
 
 <!-- Layer 1: Contract SSOT -->
-<rect x="80" y="145" width="1760" height="125" rx="12" ry="12" fill="#F8FAFC" stroke="#334155" stroke-width="2.5"/>
-<rect x="110" y="130" width="460" height="32" rx="6" ry="6" fill="#334155"/>
-<text x="340" y="146" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">【Contract SSOT】 configs/contract.yaml</text>
+<rect x="80" y="132" width="1760" height="120" rx="12" ry="12" fill="#F8FAFC" stroke="#334155" stroke-width="2.5"/>
+<rect x="110" y="116" width="450" height="34" rx="6" ry="6" fill="#334155"/>
+<text x="335" y="133" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="800" fill="#FFFFFF">【Contract SSOT】 configs/contract.yaml</text>
 
 <!-- SSOT 3 Panels -->
-<rect x="110" y="172" width="530" height="82" rx="8" ry="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
-<text x="130" y="204" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">Vision &amp; Hardware Specs</text>
-<text x="130" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#475569">Top/Wrist 30 fps (640×480) ｜ SO-101 6DoF 60 Hz</text>
+<rect x="110" y="158" width="530" height="80" rx="8" ry="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+<text x="135" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="23" font-weight="800" fill="#0F172A">Vision &amp; Hardware</text>
+<text x="135" y="224" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="600" fill="#475569">Top / Wrist 30 fps (640×480) ｜ SO-101 6-DoF</text>
 
-<rect x="695" y="172" width="530" height="82" rx="8" ry="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
-<text x="715" y="204" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">Training &amp; Inference Specs</text>
-<text x="715" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#475569">ACT (chunk_size=30) ｜ Apple Silicon MPS (M4, 24 GB)</text>
+<rect x="695" y="158" width="530" height="80" rx="8" ry="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+<text x="720" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="23" font-weight="800" fill="#0F172A">Training &amp; Inference</text>
+<text x="720" y="224" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="600" fill="#475569">ACT (chunk_size=30) ｜ Apple Silicon MPS</text>
 
-<rect x="1280" y="172" width="530" height="82" rx="8" ry="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
-<text x="1300" y="204" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">Acceptance Thresholds</text>
-<text x="1300" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#475569">Sync skew ≤33 ms ｜ Pos error ≤25 mm ｜ Yaw ≤15°</text>
+<rect x="1280" y="158" width="530" height="80" rx="8" ry="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+<text x="1305" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="23" font-weight="800" fill="#0F172A">Acceptance Gates</text>
+<text x="1305" y="224" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="600" fill="#475569">Sync ≤ 33 ms ｜ Pos &lt; 25 mm ｜ Yaw &lt; 15°</text>
 
-<!-- Connectors from SSOT down to 3 Columns with Contract Binding Badges -->
-<line x1="375" y1="270" x2="375" y2="320" stroke="#64748B" stroke-width="2.5" stroke-dasharray="4,4"/>
-<polygon points="375,320 370,310 380,310" fill="#64748B"/>
-<rect x="275" y="282" width="200" height="22" rx="4" ry="4" fill="#F1F5F9" stroke="#64748B" stroke-width="1"/>
-<text x="375" y="293" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#334155">Enforced ▶ Collection &amp; QC</text>
+<!-- Connectors from SSOT down to 3 Columns -->
+<line x1="375" y1="252" x2="375" y2="300" stroke="#64748B" stroke-width="2.5" stroke-dasharray="4,4"/>
+<polygon points="375,300 370,290 380,290" fill="#64748B"/>
+<rect x="260" y="262" width="230" height="26" rx="5" fill="#F1F5F9" stroke="#64748B" stroke-width="1"/>
+<text x="375" y="275" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#334155">Enforced ▶ Data Capture &amp; QC</text>
 
-<line x1="960" y1="270" x2="960" y2="320" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="4,4"/>
-<polygon points="960,320 955,310 965,310" fill="#F59E0B"/>
-<rect x="860" y="282" width="200" height="22" rx="4" ry="4" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1"/>
-<text x="960" y="293" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#B45309">Enforced ▶ Training &amp; Scoring</text>
+<line x1="960" y1="252" x2="960" y2="300" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="4,4"/>
+<polygon points="960,300 955,290 965,290" fill="#F59E0B"/>
+<rect x="845" y="262" width="230" height="26" rx="5" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1"/>
+<text x="960" y="275" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#B45309">Enforced ▶ Training &amp; Scoring</text>
 
-<line x1="1545" y1="270" x2="1545" y2="320" stroke="#0284C7" stroke-width="2.5" stroke-dasharray="4,4"/>
-<polygon points="1545,320 1540,310 1550,310" fill="#0284C7"/>
-<rect x="1440" y="282" width="210" height="22" rx="4" ry="4" fill="#F0F9FF" stroke="#0284C7" stroke-width="1"/>
-<text x="1545" y="293" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#0369A1">Enforced ▶ Eval &amp; Live Deployment</text>
+<line x1="1545" y1="252" x2="1545" y2="300" stroke="#0284C7" stroke-width="2.5" stroke-dasharray="4,4"/>
+<polygon points="1545,300 1540,290 1550,290" fill="#0284C7"/>
+<rect x="1430" y="262" width="230" height="26" rx="5" fill="#F0F9FF" stroke="#0284C7" stroke-width="1"/>
+<text x="1545" y="275" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0369A1">Enforced ▶ Eval &amp; Live Rollout</text>
 
-<!-- Middle Flow: 3 Stages -->
-<!-- Stage 1: Multi-Stage Gates & Data Collection -->
-<rect x="110" y="320" width="530" height="365" rx="12" ry="12" fill="#FFF1F2" stroke="#E11D48" stroke-width="2.5"/>
-<text x="375" y="362" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="24" font-weight="bold" fill="#BE123C">① Multi-Stage Gates &amp; Data Collection</text>
+<!-- ==================== MIDDLE FLOW: 3 STAGES ==================== -->
+
+<!-- Stage 1: Data Capture & QC -->
+<rect x="110" y="300" width="530" height="395" rx="12" ry="12" fill="#FFF1F2" stroke="#E11D48" stroke-width="2.5"/>
+<text x="375" y="342" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#BE123C">① Data Capture &amp; QC</text>
 
 <!-- Stage 1 Gate 1 -->
-<rect x="135" y="390" width="480" height="70" rx="8" ry="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5"/>
-<rect x="150" y="402" width="160" height="26" rx="4" ry="4" fill="#DC2626"/>
-<text x="230" y="415" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">GATE 1: PRE-FLIGHT</text>
-<text x="325" y="422" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="18" font-weight="bold" fill="#1E293B">Hardware &amp; Bus Health Check</text>
-<text x="150" y="448" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#64748B">preflight_real_so101.sh (detects drops &amp; sync errors)</text>
+<g transform="translate(135, 365)">
+  <rect width="480" height="85" rx="8" ry="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5"/>
+  <rect x="16" y="12" width="165" height="26" rx="4" ry="4" fill="#DC2626"/>
+  <text x="98" y="25" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">GATE 1: PRE-FLIGHT</text>
+  <text x="195" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#1E293B">Hardware Health Check</text>
+  <text x="16" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="600" fill="#0369A1">preflight_real_so101.sh → PASS / BLOCK</text>
+</g>
 
 <!-- Stage 1 Collection -->
-<rect x="135" y="475" width="480" height="70" rx="8" ry="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
-<text x="150" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="bold" fill="#0F172A">Demonstration Data Collection (Real / Sim)</text>
-<text x="150" y="533" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#475569">~60 Hz teleoperation ｜ 30 fps dual-camera sync</text>
+<g transform="translate(135, 465)">
+  <rect width="480" height="85" rx="8" ry="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+  <text x="16" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="23" font-weight="800" fill="#0F172A">Demonstration Recording</text>
+  <text x="16" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="600" fill="#475569">60 Hz Teleoperation ｜ 30 fps Dual-Camera Sync</text>
+</g>
 
 <!-- Stage 1 Gate 2 -->
-<rect x="135" y="560" width="480" height="98" rx="8" ry="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5"/>
-<rect x="150" y="572" width="135" height="26" rx="4" ry="4" fill="#DC2626"/>
-<text x="217" y="585" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">GATE 2: DATA QC</text>
-<text x="300" y="591" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="18" font-weight="bold" fill="#1E293B">Lag, Thermal &amp; Static Cleansing</text>
-<text x="150" y="621" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#475569">Automated validation &amp; LeRobot dataset conversion</text>
-<text x="150" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#047857">• clean28 (20,660 frames) / layout39 (39 episodes)</text>
+<g transform="translate(135, 565)">
+  <rect width="480" height="110" rx="8" ry="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5"/>
+  <rect x="16" y="12" width="145" height="26" rx="4" ry="4" fill="#DC2626"/>
+  <text x="88" y="25" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">GATE 2: DATA QC</text>
+  <text x="175" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#1E293B">Dataset Validation</text>
+  <text x="16" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#475569">Lag &amp; thermal filtering ｜ Idle frame trimming</text>
+  <text x="16" y="94" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="800" fill="#047857">✔ clean28 (20,660 frames) / layout39</text>
+</g>
 
-<!-- Flow Arrow: Stage 1 -> Stage 2 -->
-<path d="M 645 502 L 685 502" stroke="#0284C7" stroke-width="4"/>
-<polygon points="685,502 673,494 673,510" fill="#0284C7"/>
+<!-- Arrow: Stage 1 -> Stage 2 -->
+<path d="M 645 497 L 685 497" stroke="#0284C7" stroke-width="4"/>
+<polygon points="685,497 673,489 673,505" fill="#0284C7"/>
 
-<!-- Stage 2: ACT Training & Offline Pre-Scoring -->
-<rect x="695" y="320" width="530" height="365" rx="12" ry="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5"/>
-<text x="960" y="362" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="24" font-weight="bold" fill="#B45309">② ACT Training &amp; Offline Pre-Scoring</text>
+<!-- Stage 2: ACT Training & Pre-Scoring -->
+<rect x="695" y="300" width="530" height="395" rx="12" ry="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5"/>
+<text x="960" y="342" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#B45309">② ACT Training &amp; Scoring</text>
 
 <!-- Stage 2 Train -->
-<rect x="720" y="390" width="480" height="110" rx="8" ry="8" fill="#FFFFFF" stroke="#FDE68A" stroke-width="1.5"/>
-<text x="740" y="424" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" fill="#92400E">Apple Silicon Local Training (MPS)</text>
-<text x="740" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#475569">ACT Policy (ResNet18 backbone, chunk_size=30)</text>
-<text x="740" y="482" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#64748B">Fast local iterations ｜ Autonomous overnight pipeline</text>
+<g transform="translate(720, 365)">
+  <rect width="480" height="130" rx="8" ry="8" fill="#FFFFFF" stroke="#FDE68A" stroke-width="1.5"/>
+  <text x="20" y="36" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="23" font-weight="800" fill="#92400E">Local Training (Apple Silicon MPS)</text>
+  <text x="20" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#1E293B">ACT Policy (Dual ResNet18, chunk=30)</text>
+  <text x="20" y="106" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#64748B">Fast iterations on MacBook Pro M4 Pro (24 GB)</text>
+</g>
 
 <!-- Stage 2 Gate 3 -->
-<rect x="720" y="515" width="480" height="143" rx="8" ry="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5"/>
-<rect x="735" y="527" width="150" height="26" rx="4" ry="4" fill="#DC2626"/>
-<text x="810" y="540" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">GATE 3: PRE-SCORE</text>
-<text x="900" y="546" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="18" font-weight="bold" fill="#1E293B">Objective Checkpoint Selection</text>
-<text x="740" y="582" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#475569">Offline safety gate via frame0 travel &amp; arm MAE</text>
-<text x="740" y="612" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#B45309">Screens out erratic policies before physical rollout</text>
-<text x="740" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#0369A1">• Selected: last.pt / step_22500.pt</text>
+<g transform="translate(720, 510)">
+  <rect width="480" height="165" rx="8" ry="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5"/>
+  <rect x="16" y="12" width="165" height="26" rx="4" ry="4" fill="#DC2626"/>
+  <text x="98" y="25" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">GATE 3: PRE-SCORE</text>
+  <text x="195" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#1E293B">Offline Checkpoint Selection</text>
+  <text x="20" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="500" fill="#475569">Frame0 travel &amp; arm trajectory MAE checks</text>
+  <text x="20" y="102" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="18" font-weight="600" fill="#B45309">Screens out erratic policies before live rollout</text>
+  <text x="20" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="800" fill="#0369A1">✔ Selected: last.pt / step_22500.pt</text>
+</g>
 
-<!-- Flow Arrow: Stage 2 -> Stage 3 -->
-<path d="M 1230 502 L 1270 502" stroke="#0284C7" stroke-width="4"/>
-<polygon points="1270,502 1258,494 1258,510" fill="#0284C7"/>
+<!-- Arrow: Stage 2 -> Stage 3 -->
+<path d="M 1230 497 L 1270 497" stroke="#0284C7" stroke-width="4"/>
+<polygon points="1270,497 1258,489 1258,505" fill="#0284C7"/>
 
 <!-- Stage 3: Closed-Loop Eval & Live Rollout -->
-<rect x="1280" y="320" width="530" height="365" rx="12" ry="12" fill="#F0F9FF" stroke="#0284C7" stroke-width="2.5"/>
-<text x="1545" y="362" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="24" font-weight="bold" fill="#0369A1">③ Closed-Loop Eval &amp; Live Rollout</text>
+<rect x="1280" y="300" width="530" height="395" rx="12" ry="12" fill="#F0F9FF" stroke="#0284C7" stroke-width="2.5"/>
+<text x="1545" y="342" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#0369A1">③ Evaluation &amp; Rollout</text>
 
 <!-- Stage 3 Sim Eval -->
-<rect x="1305" y="390" width="480" height="118" rx="8" ry="8" fill="#FFFFFF" stroke="#BAE6FD" stroke-width="1.5"/>
-<text x="1325" y="424" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" fill="#0369A1">MuJoCo Automated Closed-Loop Eval</text>
-<text x="1325" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#475569">Temporal Ensembling (TE, n_action_steps=1)</text>
-<text x="1325" y="486" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#0284C7">100% Success ｜ Pos error: 18.1 mm ｜ Yaw: 11.8°</text>
+<g transform="translate(1305, 365)">
+  <rect width="480" height="130" rx="8" ry="8" fill="#FFFFFF" stroke="#BAE6FD" stroke-width="1.5"/>
+  <text x="20" y="36" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="23" font-weight="800" fill="#0369A1">MuJoCo Automated Closed-Loop Eval</text>
+  <text x="20" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#1E293B">Temporal Ensembling (TE, n_action_steps=1)</text>
+  <text x="20" y="106" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="800" fill="#0284C7">100% Success ｜ Pos: 18.1 mm ｜ Yaw: 11.8°</text>
+</g>
 
 <!-- Stage 3 Live Rollout -->
-<rect x="1305" y="523" width="480" height="135" rx="8" ry="8" fill="#FFFFFF" stroke="#FED7AA" stroke-width="1.5"/>
-<text x="1325" y="557" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" fill="#C2410C">SO-101 Physical Robot Deployment</text>
-<text x="1325" y="588" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#475569">Grasp object &amp; deliver to target paper zone</text>
-<text x="1325" y="617" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" fill="#475569">Robust execution under randomized initial poses</text>
-<text x="1325" y="643" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#64748B">Audit logs captured: initial XY, seeds &amp; success</text>
+<g transform="translate(1305, 510)">
+  <rect width="480" height="165" rx="8" ry="8" fill="#FFFFFF" stroke="#FED7AA" stroke-width="1.5"/>
+  <text x="20" y="36" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="23" font-weight="800" fill="#C2410C">SO-101 Physical Deployment</text>
+  <text x="20" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#1E293B">Autonomous sponge pick &amp; target placement</text>
+  <text x="20" y="104" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#475569">Live rollout with Top/Wrist camera servoing</text>
+  <text x="20" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#047857">✔ Real-world criteria fully satisfied</text>
+</g>
 
 <!-- Flow Arrow: Stage 3 down into Flywheel -->
-<path d="M 1545 690 L 1545 725" stroke="#16A34A" stroke-width="4"/>
-<polygon points="1545,725 1537,713 1553,713" fill="#16A34A"/>
+<path d="M 1545 700 L 1545 728" stroke="#16A34A" stroke-width="4"/>
+<polygon points="1545,728 1537,716 1553,716" fill="#16A34A"/>
 
-<!-- Stage 4: Improvement Flywheel (Wide prominent bottom container) -->
+<!-- Stage 4: Improvement Flywheel -->
 <rect x="80" y="735" width="1760" height="280" rx="14" ry="14" fill="#ECFDF5" stroke="#059669" stroke-width="3.5"/>
-<rect x="110" y="718" width="620" height="36" rx="6" ry="6" fill="#059669"/>
-<text x="420" y="736" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">Improvement Flywheel: Root Cause Analysis &amp; Repeatability</text>
+<rect x="110" y="718" width="600" height="36" rx="6" ry="6" fill="#059669"/>
+<text x="410" y="736" text-anchor="middle" dominant-baseline="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="21" font-weight="800" fill="#FFFFFF">Improvement Flywheel: Root Cause Analysis &amp; Repeatability</text>
 
 <!-- Flywheel Card 1 -->
-<rect x="110" y="768" width="530" height="220" rx="10" ry="10" fill="#FFFFFF" stroke="#86EFAC" stroke-width="1.5"/>
-<text x="135" y="806" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="bold" fill="#15803D">① Environment Standardization</text>
-<text x="135" y="845" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="17" fill="#1E293B">• Strict 140×70 cm tabletop setup guidelines</text>
-<text x="135" y="880" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="17" fill="#1E293B">• Workspace fiducial markings (error &lt; 5 mm)</text>
-<text x="135" y="915" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#475569">• Fixed positioning dramatically boosts real success</text>
-<text x="135" y="955" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#047857">Result: layout39 standardized dataset established</text>
+<g transform="translate(110, 770)">
+  <rect width="530" height="215" rx="10" ry="10" fill="#FFFFFF" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="24" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="25" font-weight="800" fill="#15803D">① Environment Standardization</text>
+  <text x="24" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#1E293B">• Strict 140×70 cm tabletop workspace</text>
+  <text x="24" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#1E293B">• Physical guide markings (error &lt; 5 mm)</text>
+  <text x="24" y="174" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="800" fill="#047857">Result: layout39 standardized dataset</text>
+</g>
 
 <!-- Flywheel Card 2 -->
-<rect x="695" y="768" width="530" height="220" rx="10" ry="10" fill="#FFFFFF" stroke="#86EFAC" stroke-width="1.5"/>
-<text x="720" y="806" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="bold" fill="#15803D">② Hardware Reliability</text>
-<text x="720" y="845" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="17" fill="#1E293B">• Replaced wrist_flex cable harness with new part</text>
-<text x="720" y="880" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="17" fill="#1E293B">• Eliminated motor overheating &amp; packet loss</text>
-<text x="720" y="915" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#475569">• Prevents telemetry corruption and control jitter</text>
-<text x="720" y="955" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#047857">Result: Stable high-frequency real robot operation</text>
+<g transform="translate(695, 770)">
+  <rect width="530" height="215" rx="10" ry="10" fill="#FFFFFF" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="24" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="25" font-weight="800" fill="#15803D">② Hardware Reliability</text>
+  <text x="24" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#1E293B">• Replaced wrist_flex cable harness</text>
+  <text x="24" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#1E293B">• Eliminated motor overheating &amp; packet loss</text>
+  <text x="24" y="174" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="800" fill="#047857">Result: Stable high-frequency operation</text>
+</g>
 
 <!-- Flywheel Card 3 -->
-<rect x="1280" y="768" width="530" height="220" rx="10" ry="10" fill="#FFFFFF" stroke="#86EFAC" stroke-width="1.5"/>
-<text x="1305" y="806" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="bold" fill="#15803D">③ Data &amp; Policy Iteration</text>
-<text x="1305" y="845" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="17" fill="#1E293B">• Re-collected teleop under new spec (layout39)</text>
-<text x="1305" y="880" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="17" fill="#1E293B">• Deploy only models passing all quality gates</text>
-<text x="1305" y="915" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" fill="#475569">• Feed failure root causes directly back into collection</text>
-<text x="1305" y="955" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#047857">Result: 100% eval success &amp; reliable live deployment</text>
+<g transform="translate(1280, 770)">
+  <rect width="530" height="215" rx="10" ry="10" fill="#FFFFFF" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="24" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="25" font-weight="800" fill="#15803D">③ Data &amp; Policy Iteration</text>
+  <text x="24" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#1E293B">• Re-collected teleop under layout39</text>
+  <text x="24" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#1E293B">• Deploy only gate-passed checkpoints</text>
+  <text x="24" y="174" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="800" fill="#047857">Result: 100% eval &amp; live rollout success</text>
+</g>
 
 <!-- Loopback Arrow from Flywheel to Stage 1 -->
 <path d="M 110 878 L 38 878 L 38 502 L 104 502" fill="none" stroke="#059669" stroke-width="4.5" stroke-dasharray="10,6"/>

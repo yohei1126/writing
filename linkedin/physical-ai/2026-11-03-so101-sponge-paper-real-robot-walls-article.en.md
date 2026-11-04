@@ -31,7 +31,7 @@ All scripts and docs are public:
 
 - Source code: [yohei1126/lerobot-so101-pick-and-place](https://github.com/yohei1126/lerobot-so101-pick-and-place)
 - Docs: [project documentation](https://yohei1126.github.io/lerobot-so101-pick-and-place/)
-- Demo video: [YouTube](https://youtu.be/hYQggz5CilA)
+- Demo video: [YouTube](https://youtu.be/wKztDcdr5Sg)
 
 ## Full path to a working demo
 
@@ -150,4 +150,4 @@ These are the lessons for anyone starting imitation learning on a desktop arm, i
 
 On a small robot arm, standardizing the physical environment (power, ports, jig layout, heat management) mattered about as much as choosing the model.
 
-Everything is public. Clone the [repository](https://github.com/yohei1126/lerobot-so101-pick-and-place), read the bring-up steps in the [docs](https://yohei1126.github.io/lerobot-so101-pick-and-place/), try a dry-run on your desk, and watch the [demo video](https://youtu.be/hYQggz5CilA). The hardware is described in the [LeRobot SO-101 docs](https://huggingface.co/docs/lerobot/so101). The Japanese version is on [Zenn](https://zenn.dev/yohei/articles/2026-11-03-so101-sponge-paper-real-robot-walls).
+Everything is public. Clone the [repository](https://github.com/yohei1126/lerobot-so101-pick-and-place), read the bring-up steps in the [docs](https://yohei1126.github.io/lerobot-so101-pick-and-place/), try a dry-run on your desk, and watch the [demo video](https://youtu.be/wKztDcdr5Sg). The hardware is described in the [LeRobot SO-101 docs](https://huggingface.co/docs/lerobot/so101). The Japanese version is on [Zenn](https://zenn.dev/yohei/articles/2026-11-03-so101-sponge-paper-real-robot-walls).
