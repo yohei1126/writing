@@ -9,7 +9,7 @@ Translate and adapt the JA short teleprompt spec into English for a public EN re
 
 ## Audience / framing
 - Public English YouTube companion to the LinkedIn EN article (OSS outreach), not an OmniCampus submission form.
-- Keep course credit: Physical AI Applied 1, UTokyo Matsuo-Iwasawa Lab, author yohei1126, date 2026/10/31, course URL https://weblab.t.u-tokyo.ac.jp/lecture/course-list/physical-ai/advanced1/
+- Keep course credit: Physical AI Applied 1, UTokyo Matsuo-Iwasawa Lab, Author - Yohei Onishi (date omitted from title card; shown in YouTube metadata), course URL https://weblab.t.u-tokyo.ac.jp/lecture/course-list/physical-ai/advanced1/
 - Past tense. Course finished and submitted.
 - Do NOT mention Zennfes, contests, OmniCampus, or "final assignment submission checklist" on-screen.
 - Internal notes section (privacy, not-for-kids, unlisted) may stay as off-screen editor notes in English, never as on-screen copy.

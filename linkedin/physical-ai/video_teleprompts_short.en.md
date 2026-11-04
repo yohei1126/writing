@@ -16,7 +16,7 @@ TE means Temporal Ensembling (not task engineering).
 
 | Shot | Content | Duration | Cumulative | Material |
 |---|---|---|---|---|
-| A Title | Project title, course info, author, date | 10.000 s | 0.000-10.000 s | Title card (black background / course name, URL, date) |
+| A Title | Project title, course info, author | 10.000 s | 0.000-10.000 s | Title card (black background / course name, URL, author) |
 | B Background → task | Port precision handling context, task and success criteria | 12.000 s | 10.000-22.000 s | Background slide / task definition card |
 | C Setup | 140×70 cm standardized desk setup | 8.000 s | 22.000-30.000 s | Setup explanation card / layout diagram |
 | C1b Real-robot photos | layout39 real-robot setup photos (2) | 10.000 s | 30.000-40.000 s | Two photos (IMG_1336 / IMG_1338, about 5 s each) |
@@ -35,7 +35,7 @@ TE means Temporal Ensembling (not task engineering).
 
 | No. | Display window | On-screen text | Focus | Notes |
 |---|---|---|---|---|
-| A1 | 0.000-10.000 s (10.0 s) | UTokyo Matsuo-Iwasawa Lab: Physical AI Applied 1, Intelligent Robotics 2026 Summer<br>SO-101 Pick-and-Place with ACT and Temporal Ensembling<br>Author yohei1126 / Date 2026/10/31<br>https://weblab.t.u-tokyo.ac.jp/lecture/course-list/physical-ai/advanced1/ | Course name, project title, author, date, and course URL. | Multi-line, centered. Black or dark background for legibility. |
+| A1 | 0.000-10.000 s (10.0 s) | UTokyo Matsuo-Iwasawa Lab: Physical AI Applied 1, Intelligent Robotics 2026 Summer<br>SO-101 Pick-and-Place with ACT and Temporal Ensembling<br>Author - Yohei Onishi<br>https://weblab.t.u-tokyo.ac.jp/lecture/course-list/physical-ai/advanced1/ | Course name, project title, author, and course URL (date omitted; release date shown in YouTube description). | Multi-line, centered. Black or dark background for legibility. |
 
 ### B Social context and success criteria (10.000-22.000 s / 12.0 s)
 
@@ -102,10 +102,10 @@ The items below are for editors and publishing checks only. **Do not show any of
    - Audience: "No, it's not made for kids" (Not made for kids).
    - Age restriction: none.
    - Premiere: off.
-2. **Privacy**
-   - Do not include full name, affiliation, personal email, glimpses of living space, or OS/Finder personal path information.
-   - The only person identifier on screen is `yohei1126`.
-   - Do not put management instructions such as "unlisted / no personal data / identifier is yohei1126 only" into any on-screen text.
+2. **Author and privacy**
+   - Author credit on title card is `Author - Yohei Onishi` (release date is omitted from the card since it appears in the YouTube description/metadata).
+   - Do not include affiliation, personal email, glimpses of living space, or OS/Finder personal path information.
+   - Do not put management instructions such as "unlisted / no personal data" into any on-screen text.
 3. **Audio and playback**
    - The export is silent: no narration and no BGM in the file.
    - Background music is added later in YouTube Studio. Do not put any music title, artist, license, or credit in the video, the teleprompts, or the copy-paste blocks.
@@ -128,7 +128,7 @@ Text blocks for pasting directly into an editor (Premiere Pro, DaVinci Resolve, 
 ```text
 UTokyo Matsuo-Iwasawa Lab: Physical AI Applied 1, Intelligent Robotics 2026 Summer
 SO-101 Pick-and-Place with ACT and Temporal Ensembling
-Author yohei1126 / Date 2026/10/31
+Author - Yohei Onishi
 https://weblab.t.u-tokyo.ac.jp/lecture/course-list/physical-ai/advanced1/
 ```
 
