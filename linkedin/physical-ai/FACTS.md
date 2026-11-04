@@ -58,6 +58,7 @@ Do not invent extra figures. Do not use remote Zenn CDN URLs; use the local `../
   - Repo: https://github.com/yohei1126/lerobot-so101-pick-and-place
   - Docs: https://yohei1126.github.io/lerobot-so101-pick-and-place/
   - YouTube: https://youtu.be/wKztDcdr5Sg
+  - LinkedIn Article: https://www.linkedin.com/pulse/beyond-model-9-practical-engineering-hurdles-imitation-yohei-onishi-lyzvc/
   - HF SO-101: https://huggingface.co/docs/lerobot/so101
   - Zenn: https://zenn.dev/yohei/articles/2026-11-03-so101-sponge-paper-real-robot-walls
 - Forbidden: invented numbers or claims; tables, HTML, Mermaid; em dashes; music credit; present progressive as if the course were ongoing; calling the piece a "short" version.
