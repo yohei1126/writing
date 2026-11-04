@@ -16,7 +16,7 @@ I changed several things between the 0/16 and the 3/3 and did not isolate which 
 
 Setup: SO-ARM101, LeRobot, ACT, MuJoCo, trained on a MacBook Pro (MPS). This was my final assignment for Physical AI Applied 1 at the UTokyo Matsuo-Iwasawa Lab, and the course has finished.
 
-Full write-up: [LINK TO ARTICLE]
+Full write-up: https://www.linkedin.com/pulse/beyond-model-9-practical-engineering-hurdles-imitation-yohei-onishi-lyzvc/
 Code: https://github.com/yohei1126/lerobot-so101-pick-and-place
 Docs: https://yohei1126.github.io/lerobot-so101-pick-and-place/
 Video: https://youtu.be/wKztDcdr5Sg
