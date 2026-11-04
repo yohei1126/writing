@@ -2,6 +2,19 @@
 
 Source of truth: the published Zenn JA article (`_pr18_src/zenn-source.md`). Adapt it to LinkedIn EN. Do not add claims that are not in the Zenn article.
 
+## Structure (match Zenn section order)
+1. Introduction — course (Physical AI Applied 1 / Matsuo-Iwasawa Lab), task overview, then 0/16 → 3/3 arc. Past tense. Course finished and submitted.
+2. Task and prerequisites — stack bullets then public links.
+3. Full path to a working demo — nine stages; may mention RobOps architecture figure.
+4. Problems and fixes by stage — nine subsections matching Zenn (prefer stage names over "Wall N" as primary headings).
+5. If you try the same thing.
+6. Closing.
+
+## Omit
+- Do NOT mention Zennfes, Autumn 2026, or any contest/theme.
+- A link to the Japanese Zenn article itself is fine.
+
+
 - Course: Physical AI Applied 1, UTokyo Matsuo-Iwasawa Lab. Final assignment, already submitted. Use past tense.
 - Task: pick a sponge with the gripper, carry it to a target sheet of paper, place it still.
 - Robot: SO-ARM101, 6-DoF low-cost open-source arm, Leader/Follower pair ([LeRobot SO-101 docs](https://huggingface.co/docs/lerobot/so101)).
