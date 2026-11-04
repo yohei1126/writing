@@ -1,4 +1,4 @@
-# From 0/16 to 3/3: nine stages of imitation learning on a desktop robot arm
+# Beyond the Model: 9 Practical Engineering Hurdles in Real-Robot Imitation Learning (SO-101 + ACT)
 
 ![Cover: SO-ARM101 desk setup for sponge pick-and-place](../../images/physical-ai-linkedin-cover.jpg)
 
