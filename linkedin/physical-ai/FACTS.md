@@ -1,20 +1,34 @@
-# Locked facts for Physical AI LinkedIn EN (2026-11-03)
+# Locked facts for Physical AI LinkedIn EN (2026-11-04)
 
-Source of truth: the published Zenn JA article (`_pr18_src/zenn-source.md`). Adapt it to LinkedIn EN. Do not add claims that are not in the Zenn article.
+Source of truth: the published Zenn JA article (`_pr18_src/zenn-source.md`). Produce a **full-length** English LinkedIn article with the same depth and detail as Zenn (not a short summary). Do not add claims that are not in the Zenn article.
+
+## Length
+- Full parity with Zenn: every stage's struggle → fix → benefit at Zenn depth.
+- Do NOT shorten into a digest or "short English version" framing.
 
 ## Structure (match Zenn section order)
-1. Introduction — course (Physical AI Applied 1 / Matsuo-Iwasawa Lab), task overview, then 0/16 → 3/3 arc. Past tense. Course finished and submitted.
-2. Task and prerequisites — stack bullets then public links.
-3. Full path to a working demo — nine stages; may mention RobOps architecture figure.
-4. Problems and fixes by stage — nine subsections matching Zenn (prefer stage names over "Wall N" as primary headings).
-5. If you try the same thing.
-6. Closing.
+1. H1 title, then cover image immediately under the H1.
+2. Introduction — course (Physical AI Applied 1 / Matsuo-Iwasawa Lab), task overview, then 0/16 → 3/3 arc. Past tense. Course finished and submitted. Link to Zenn JA is fine; do not call this a short version.
+3. Task and prerequisites — stack bullets then public links (same coverage as Zenn subsections).
+4. Full path to a working demo — RobOps figure, then nine stages listed.
+5. Problems and fixes by stage — nine subsections matching Zenn (stage names, not "Wall N" as primary headings). Include setup photos in stages 2 and 3 as below.
+6. If you try the same thing.
+7. Closing.
+
+## Images (required; relative paths from this article file)
+Place these markdown images at the same narrative points as Zenn:
+1. Cover (right after H1): `![Cover: SO-ARM101 desk setup for sponge pick-and-place](../../images/physical-ai-linkedin-cover.jpg)`
+2. RobOps flywheel (in "Full path to a working demo", where Zenn has the diagram): `![RobOps improvement flywheel: setup, data, training, real-robot evaluation](../../images/physical-ai-roboops-architecture.en.png)`
+3. Desk layout (in stage 2 机上配置 / Desk layout standardization, where Zenn has the first setup photo): `![Desk layout with masking-tape frame, sponge, and paper target](../../images/zenn-setup-a.jpeg)`
+4. Preflight / framing (in stage 3 事前点検, where Zenn has the second setup photo): `![Top and wrist camera framing of sponge, paper, and follower arm](../../images/zenn-setup-b.jpeg)`
+
+Do not invent extra figures. Do not use remote Zenn CDN URLs; use the local `../../images/...` paths above.
 
 ## Omit
 - Do NOT mention Zennfes, Autumn 2026, or any contest/theme.
 - A link to the Japanese Zenn article itself is fine.
 
-
+## Locked facts
 - Course: Physical AI Applied 1, UTokyo Matsuo-Iwasawa Lab. Final assignment, already submitted. Use past tense.
 - Task: pick a sponge with the gripper, carry it to a target sheet of paper, place it still.
 - Robot: SO-ARM101, 6-DoF low-cost open-source arm, Leader/Follower pair ([LeRobot SO-101 docs](https://huggingface.co/docs/lerobot/so101)).
@@ -45,4 +59,4 @@ Source of truth: the published Zenn JA article (`_pr18_src/zenn-source.md`). Ada
   - YouTube: https://youtu.be/hYQggz5CilA
   - HF SO-101: https://huggingface.co/docs/lerobot/so101
   - Zenn: https://zenn.dev/yohei/articles/2026-11-03-so101-sponge-paper-real-robot-walls
-- Forbidden: invented numbers or claims; tables, HTML, Mermaid; em dashes; music credit; present progressive as if the course were ongoing.
+- Forbidden: invented numbers or claims; tables, HTML, Mermaid; em dashes; music credit; present progressive as if the course were ongoing; calling the piece a "short" version.
