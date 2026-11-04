@@ -1,4 +1,4 @@
-# From 0/16 to a working sponge place on a desktop robot arm
+# Beyond the Model: 9 Practical Engineering Hurdles in Real-Robot Imitation Learning (SO-101 + ACT)
 
 My first live evaluation of an imitation-learning policy on a real robot arm scored 0/16. A later policy completed grasp-and-place 3 out of 3 times on the L2 evaluation set. With n=3, that is a reference point, not a benchmark.
 
