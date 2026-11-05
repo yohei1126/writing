@@ -25,9 +25,11 @@ Add one Python 3 script that creates a **Dev.to draft** (`published: false`) fro
 - tags: pass as list if API accepts list; Dev.to often wants comma string — use whatever matches current Forem docs for create (list of up to 4 is commonly accepted in JSON; if unsure, join with comma as string). Prefer list of strings matching payload tags when the API sample uses array; if docs show string, join with ", ".
 
 ## CLI
-```
+
+```bash
 python3 scripts/devto_create_draft.py <devto-meta.yml>
 ```
+
 - Path may be relative to cwd or absolute; resolve source paths via repo root like `devto_payload.py`.
 - `--dry-run` optional: print the wrapped `{"article":...}` JSON and do not POST.
 
